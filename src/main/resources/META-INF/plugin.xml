@@ -1,0 +1,19 @@
+<idea-plugin>
+    <id>org.GcViewer</id>
+    <name>GCViewer plugin</name>
+    <vendor email="slamosha@yandex.ru">YourCompany</vendor>
+
+    <description>Simple proxy for http://github.com/chewiebug/GCViewer</description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+
+    </extensions>
+
+    <actions>
+       <action id="OpenGCFileAction" class="actions.OpenGCFileAction" text="Analyze GC log">
+           <add-to-group group-id="ProjectViewPopupMenu"/>
+       </action>
+    </actions>
+</idea-plugin>
