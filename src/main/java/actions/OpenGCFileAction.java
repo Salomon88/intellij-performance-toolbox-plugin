@@ -10,6 +10,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.tagtraum.perf.gcviewer.GCViewer;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ public class OpenGCFileAction extends AnAction {
             gcViewer.add(new JButton("click me"));
             final Executor executor = DefaultRunExecutor.getRunExecutorInstance();
             final ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
-            final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcViewer, "GC " + virtualFile.getName(), null) {
+            final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcViewer, virtualFile.getName(), IconLoader.getIcon("/icons/gcviewer.png")) {
                 @Override
                 public boolean isContentReuseProhibited() {
                     return true;
