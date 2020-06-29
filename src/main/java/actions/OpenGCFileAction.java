@@ -6,7 +6,6 @@ import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.execution.ui.RunContentManager;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 
-public class OpenGCFileAction extends AnAction {
+public class OpenGCFileAction extends CommonAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
@@ -39,12 +38,6 @@ public class OpenGCFileAction extends AnAction {
             RunContentManager.getInstance(project).showRunContent(executor, descriptor);
         });
 
-        new Thread(() -> {
-            try {
-                new GCViewer().doMain(new String[]{virtualFile.getCanonicalPath()});
-            } catch (InvocationTargetException | InterruptedException exception) {
-                exception.printStackTrace();
-            }
-        }).start();
+        startGcViewer(virtualFile);
     }
 }
