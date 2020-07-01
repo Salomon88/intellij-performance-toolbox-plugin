@@ -12,6 +12,6 @@ public class MultipleGCFileAction extends CommonAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         final FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, false);
         final VirtualFile virtualFile = FileChooser.chooseFile(descriptor, e.getProject(), null);
-        startGcViewer(virtualFile);
+        startGcViewer(e.getProject(), virtualFile);
     }
 }
