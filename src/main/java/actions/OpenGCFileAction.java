@@ -50,7 +50,7 @@ public class OpenGCFileAction extends AnAction {
 
             final Executor executor = DefaultRunExecutor.getRunExecutorInstance();
             final ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
-            final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcDocument, virtualFile.getName(), IconLoader.getIcon("/icons/gcviewer.png")) {
+            final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcDocument.getRootPane(), virtualFile.getName(), IconLoader.getIcon("/icons/gcviewer.png")) {
                 @Override
                 public boolean isContentReuseProhibited() {
                     return true;
