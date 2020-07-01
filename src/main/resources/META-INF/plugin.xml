@@ -13,10 +13,8 @@
 
     <actions>
         <action id="OpenGCFileAction" class="actions.OpenGCFileAction" text="Analyze GC log" icon="/icons/gcviewer.png">
-            <add-to-group group-id="ProjectViewPopupMenu"/>
-        </action>
-        <action id="MultipleGCFileAction" class="actions.MultipleGCFileAction" text="Analyze GC log">
             <add-to-group group-id="InspectCodeGroup"/>
+            <add-to-group group-id="ProjectViewPopupMenu"/>
         </action>
     </actions>
 </idea-plugin>
