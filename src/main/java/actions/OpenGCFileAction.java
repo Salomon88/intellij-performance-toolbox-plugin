@@ -1,5 +1,6 @@
 package actions;
 
+import com.github.gcviewerplugin.MockedGCViewerGui;
 import com.intellij.execution.Executor;
 import com.intellij.execution.executors.DefaultRunExecutor;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
@@ -22,33 +23,65 @@ import com.tagtraum.perf.gcviewer.ctrl.impl.GCModelLoaderFactory;
 import com.tagtraum.perf.gcviewer.ctrl.impl.ViewMenuController;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
+import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeListener;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.intellij.openapi.fileChooser.FileChooser.chooseFile;
+import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
+import static com.intellij.openapi.fileChooser.FileChooser.chooseFiles;
+import static java.util.Arrays.stream;
+import static java.util.Comparator.reverseOrder;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingWorker.StateValue.DONE;
 
 public class OpenGCFileAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        final Project project = e.getProject();
-        // TODO load series of gc logs
-        final VirtualFile virtualFile = "MainMenu".equals(e.getPlace())
-                ? chooseFile(new FileChooserDescriptor(true, true, false, false, false, false), e.getProject(), null)
-                : ((VirtualFile) e.getDataContext().getData("virtualFile"));
-        startGcViewer(project, virtualFile);
+        ofNullable(getGCResource(e)).ifPresent(gcResource -> startGcViewer(e.getProject(), gcResource));
     }
 
-    private void addToConsoleView(Project project, GCDocument gcDocument, VirtualFile virtualFile) {
+    private GCResource getGCResource(AnActionEvent e) {
+        if (GROUP_MAIN_MENU.equals(e.getPlace())) {
+            FileChooserDescriptor fcd = new FileChooserDescriptor(true, false, false, false, false, true);
+            VirtualFile[] virtualFiles = chooseFiles(fcd, e.getProject(), null);
+            return getGCResource(virtualFiles);
+        }
+
+        return getGCResource(((VirtualFile) e.getDataContext().getData("virtualFile")));
+    }
+
+    private GCResource getGCResource(VirtualFile... virtualFiles) {
+        if (virtualFiles == null || virtualFiles.length == 0) {
+            return null;
+        } else if (virtualFiles.length == 1) {
+            return new GcResourceFile(virtualFiles[0].getPath());
+        }
+
+        return new GcResourceSeries(stream(virtualFiles).map(VirtualFile::getPath).sorted(reverseOrder()).map(GcResourceFile::new).collect(toList()));
+    }
+
+    private String getGCResourceName(GCResource gcResource) {
+        String name = gcResource.getResourceName().replaceAll("\\\\", "/");
+
+        if (name.contains("/")) {
+            return name.substring(name.lastIndexOf("/") + 1);
+        }
+
+        return name;
+    }
+
+    private void addToConsoleView(Project project, GCDocument gcDocument, GCResource gcResource) {
         ApplicationManager.getApplication().invokeLater(() -> {
             final Executor executor = DefaultRunExecutor.getRunExecutorInstance();
             final ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
-            final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcDocument.getRootPane(), virtualFile.getName(), IconLoader.getIcon("/icons/gcviewer.png")) {
+            final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcDocument.getRootPane(), getGCResourceName(gcResource), IconLoader.getIcon("/icons/gcviewer.png")) {
                 @Override
                 public boolean isContentReuseProhibited() {
                     return true;
@@ -58,11 +91,18 @@ public class OpenGCFileAction extends AnAction {
         });
     }
 
-    private void waitForParsingCompletion(GCModelLoader gcModelLoader, ProgressIndicator indicator) throws InterruptedException {
+    private void waitForParsingCompletion(GCModelLoader gcModelLoader, ProgressIndicator indicator, int seriesSize) throws InterruptedException {
+        final AtomicInteger accumulator = new AtomicInteger();
         final CountDownLatch latch = new CountDownLatch(1);
         final PropertyChangeListener propertyChangeListener = evt -> {
             if ("progress".equals(evt.getPropertyName())) {
-                indicator.setFraction(1. / (Integer) evt.getNewValue());
+                if (seriesSize > 1) {
+                    if ((Integer) evt.getNewValue() < (Integer) evt.getOldValue()) {
+                        accumulator.addAndGet(100);
+                    }
+                }
+
+                indicator.setFraction(((Integer) evt.getNewValue() + accumulator.get()) / 100. / seriesSize);
             } else if ("state".equals(evt.getPropertyName()) && DONE == evt.getNewValue()) {
                 latch.countDown();
             }
@@ -73,22 +113,21 @@ public class OpenGCFileAction extends AnAction {
         gcModelLoader.removePropertyChangeListener(propertyChangeListener);
     }
 
-    private void startGcViewer(Project project, VirtualFile virtualFile) {
+    private void startGcViewer(Project project, GCResource gcResource) {
         ApplicationManager.getApplication().invokeLater(() -> {
-            ProgressManager.getInstance().run(new Backgroundable(project, "Parsing " + virtualFile.getName(), true) {
+            ProgressManager.getInstance().run(new Backgroundable(project, "Parsing " + getGCResourceName(gcResource), true) {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
-                    final GCResource gcResource = new GcResourceFile(virtualFile.getPath());
                     final GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
                     // TODO store in plugin
                     GCPreferences gcPreferences = new GCPreferences();
                     GCDocument gcDocument = new GCDocument(gcPreferences, gcResource.getResourceName());
                     GCDocumentController docController = new GCDocumentController(gcDocument);
-                    docController.addGCResource(gcModelLoader, new ViewMenuController(null));
+                    docController.addGCResource(gcModelLoader, new ViewMenuController(new MockedGCViewerGui()));
 
                     try {
-                        waitForParsingCompletion(gcModelLoader, indicator);
-                        addToConsoleView(project, gcDocument, virtualFile);
+                        waitForParsingCompletion(gcModelLoader, indicator, gcResource instanceof GcResourceSeries ? ((GcResourceSeries) gcResource).getResourcesInOrder().size() : 1);
+                        addToConsoleView(project, gcDocument, gcResource);
                     } catch (InterruptedException e) {/* it is ok on cancel */}
                 }
             });
