@@ -1,5 +1,6 @@
 package actions;
 
+import com.github.gcviewerplugin.GCDocumentWrapper;
 import com.github.gcviewerplugin.GCModelLoaderController;
 import com.github.gcviewerplugin.MockedGCViewerGui;
 import com.intellij.execution.Executor;
@@ -16,7 +17,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task.Backgroundable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.ctrl.impl.GCDocumentController;
@@ -29,6 +29,7 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import org.jetbrains.annotations.NotNull;
 
+import static com.github.gcviewerplugin.Util.getNormalizedName;
 import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
 import static com.intellij.openapi.fileChooser.FileChooser.chooseFiles;
 import static java.util.Arrays.stream;
@@ -63,21 +64,12 @@ public class OpenGCFileAction extends AnAction {
         return new GcResourceSeries(stream(virtualFiles).map(VirtualFile::getPath).sorted(reverseOrder()).map(GcResourceFile::new).collect(toList()));
     }
 
-    private String getGCResourceName(GCResource gcResource) {
-        String name = gcResource.getResourceName().replaceAll("\\\\", "/");
-
-        if (name.contains("/")) {
-            return name.substring(name.lastIndexOf("/") + 1);
-        }
-
-        return name;
-    }
-
-    private void addToConsoleView(Project project, GCDocument gcDocument, GCResource gcResource) {
+    private void addToConsoleView(Project project, GCDocument gcDocument) {
         ApplicationManager.getApplication().invokeLater(() -> {
             final Executor executor = DefaultRunExecutor.getRunExecutorInstance();
             final ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
-            final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcDocument.getRootPane(), getGCResourceName(gcResource), IconLoader.getIcon("/icons/gcviewer.png")) {
+            final GCDocumentWrapper gcDocumentWrapper = new GCDocumentWrapper(gcDocument);
+            final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcDocumentWrapper.getComponent(), gcDocumentWrapper.getDisplayName(), gcDocumentWrapper.getIcon()) {
                 @Override
                 public boolean isContentReuseProhibited() {
                     return true;
@@ -89,7 +81,7 @@ public class OpenGCFileAction extends AnAction {
 
     private void startGcViewer(Project project, GCResource gcResource) {
         ApplicationManager.getApplication().invokeLater(() -> {
-            ProgressManager.getInstance().run(new Backgroundable(project, "Parsing " + getGCResourceName(gcResource), true) {
+            ProgressManager.getInstance().run(new Backgroundable(project, "Parsing " + getNormalizedName(gcResource), true) {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
                     final GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
@@ -101,7 +93,7 @@ public class OpenGCFileAction extends AnAction {
 
                     try {
                         new GCModelLoaderController(gcModelLoader, gcResource, indicator).run();
-                        addToConsoleView(project, gcDocument, gcResource);
+                        addToConsoleView(project, gcDocument);
                     } catch (InterruptedException e) {/* it is ok on cancel */}
                 }
             });
