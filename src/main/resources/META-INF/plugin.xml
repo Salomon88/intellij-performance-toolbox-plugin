@@ -12,9 +12,9 @@
     </extensions>
 
     <actions>
-        <action id="OpenGCFileAction" class="actions.OpenGCFileAction" text="Analyze GC log" icon="/icons/gcviewer.png">
+        <action id="OpenGCFileAction" class="actions.OpenGCFileAction" text="_Garbage Collector Log...">
+            <add-to-group group-id="AnalyzePlatformMenu"/>
             <add-to-group group-id="InspectCodeGroup"/>
-            <add-to-group group-id="ProjectViewPopupMenu"/>
         </action>
     </actions>
 </idea-plugin>

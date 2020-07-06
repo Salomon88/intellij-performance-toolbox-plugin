@@ -1,5 +1,6 @@
 package actions;
 
+import com.github.gcviewerplugin.GCModelLoaderController;
 import com.github.gcviewerplugin.MockedGCViewerGui;
 import com.intellij.execution.Executor;
 import com.intellij.execution.executors.DefaultRunExecutor;
@@ -28,17 +29,12 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import org.jetbrains.annotations.NotNull;
 
-import java.beans.PropertyChangeListener;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
 import static com.intellij.openapi.fileChooser.FileChooser.chooseFiles;
 import static java.util.Arrays.stream;
 import static java.util.Comparator.reverseOrder;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static javax.swing.SwingWorker.StateValue.DONE;
 
 public class OpenGCFileAction extends AnAction {
 
@@ -91,28 +87,6 @@ public class OpenGCFileAction extends AnAction {
         });
     }
 
-    private void waitForParsingCompletion(GCModelLoader gcModelLoader, ProgressIndicator indicator, int seriesSize) throws InterruptedException {
-        final AtomicInteger accumulator = new AtomicInteger();
-        final CountDownLatch latch = new CountDownLatch(1);
-        final PropertyChangeListener propertyChangeListener = evt -> {
-            if ("progress".equals(evt.getPropertyName())) {
-                if (seriesSize > 1) {
-                    if ((Integer) evt.getNewValue() < (Integer) evt.getOldValue()) {
-                        accumulator.addAndGet(100);
-                    }
-                }
-
-                indicator.setFraction(((Integer) evt.getNewValue() + accumulator.get()) / 100. / seriesSize);
-            } else if ("state".equals(evt.getPropertyName()) && DONE == evt.getNewValue()) {
-                latch.countDown();
-            }
-        };
-        gcModelLoader.addPropertyChangeListener(propertyChangeListener);
-        gcModelLoader.execute();
-        latch.await();
-        gcModelLoader.removePropertyChangeListener(propertyChangeListener);
-    }
-
     private void startGcViewer(Project project, GCResource gcResource) {
         ApplicationManager.getApplication().invokeLater(() -> {
             ProgressManager.getInstance().run(new Backgroundable(project, "Parsing " + getGCResourceName(gcResource), true) {
@@ -126,7 +100,7 @@ public class OpenGCFileAction extends AnAction {
                     docController.addGCResource(gcModelLoader, new ViewMenuController(new MockedGCViewerGui()));
 
                     try {
-                        waitForParsingCompletion(gcModelLoader, indicator, gcResource instanceof GcResourceSeries ? ((GcResourceSeries) gcResource).getResourcesInOrder().size() : 1);
+                        new GCModelLoaderController(gcModelLoader, gcResource, indicator).run();
                         addToConsoleView(project, gcDocument, gcResource);
                     } catch (InterruptedException e) {/* it is ok on cancel */}
                 }
