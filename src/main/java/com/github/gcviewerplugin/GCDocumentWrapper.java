@@ -14,6 +14,9 @@ import javax.swing.*;
 import java.awt.*;
 
 import static com.github.gcviewerplugin.Util.getNormalizedName;
+import static com.github.gcviewerplugin.Util.getPropertyChangeListener;
+import static com.intellij.icons.AllIcons.Actions.Refresh;
+import static com.intellij.icons.AllIcons.General.Settings;
 
 public class GCDocumentWrapper {
 
@@ -34,20 +37,22 @@ public class GCDocumentWrapper {
     }
 
     public String getDisplayName() {
-        return getNormalizedName(gcDocument.getGCResources().get(0));
+        return getNormalizedName(gcDocument);
     }
 
     private JPanel initComponent() {
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
-        defaultActionGroup.add(new AnAction("Settings", "Open plugin settings", IconLoader.getIcon("/general/settings.png")) {
+        defaultActionGroup.add(new AnAction("Settings", "Open plugin settings", Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ShowSettingsUtil.getInstance().showSettingsDialog(null, (String) null);
             }
         });
-        defaultActionGroup.add(new AnAction("Reload", "Reload the current file", IconLoader.getIcon("/actions/refresh.png")) {
+        defaultActionGroup.add(new AnAction("Reload", "Reload the current file", Refresh) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
+                ModelLoaderController modelLoaderController = getPropertyChangeListener(gcDocument, ModelLoaderController.class);
+                modelLoaderController.reload(gcDocument);
             }
         });
         final ActionToolbar actionBar = ActionManager.getInstance().createActionToolbar("gcview", defaultActionGroup, false);
