@@ -4,8 +4,13 @@ import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 
 import java.beans.PropertyChangeListener;
+import java.util.ResourceBundle;
 
 public class Util {
+
+    public static ResourceBundle getResourceBundle() {
+        return ResourceBundle.getBundle("gcviewerBundle");
+    }
 
     public static String getNormalizedName(GCDocument gcDocument) {
         return getNormalizedName(gcDocument.getGCResources().get(0));

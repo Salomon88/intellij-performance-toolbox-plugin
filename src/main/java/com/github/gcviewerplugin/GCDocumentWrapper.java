@@ -1,5 +1,6 @@
 package com.github.gcviewerplugin;
 
+import com.github.gcviewerplugin.actions.ToggleBooleanAction;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -12,11 +13,16 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ResourceBundle;
 
 import static com.github.gcviewerplugin.Util.getNormalizedName;
 import static com.github.gcviewerplugin.Util.getPropertyChangeListener;
+import static com.github.gcviewerplugin.Util.getResourceBundle;
+import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.Refresh;
 import static com.intellij.icons.AllIcons.General.Settings;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.WEST;
 
 public class GCDocumentWrapper {
 
@@ -41,26 +47,33 @@ public class GCDocumentWrapper {
     }
 
     private JPanel initComponent() {
+        final ResourceBundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
-        defaultActionGroup.add(new AnAction("Settings", "Open plugin settings", Settings) {
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.settings.text"), resourceBundle.getString("action.settings.description"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ShowSettingsUtil.getInstance().showSettingsDialog(null, (String) null);
             }
         });
-        defaultActionGroup.add(new AnAction("Reload", "Reload the current file", Refresh) {
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.reload.text"), resourceBundle.getString("action.reload.description"), Refresh) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ModelLoaderController modelLoaderController = getPropertyChangeListener(gcDocument, ModelLoaderController.class);
                 modelLoaderController.reload(gcDocument);
             }
         });
+        defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.dataPanel.text"), resourceBundle.getString("action.dataPanel.description"), PreviewDetails, false) {
+            @Override
+            public void setSelected(@NotNull AnActionEvent e, boolean state) {
+                super.setSelected(e, state);
+                gcDocument.setShowModelMetricsPanel(!state);
+            }
+        });
         final ActionToolbar actionBar = ActionManager.getInstance().createActionToolbar("gcview", defaultActionGroup, false);
-
         final JPanel jPanel = new JPanel();
         jPanel.setLayout(new BorderLayout());
-        jPanel.add(gcDocument.getRootPane(), BorderLayout.CENTER);
-        jPanel.add(actionBar.getComponent(), BorderLayout.WEST);
+        jPanel.add(gcDocument.getRootPane(), CENTER);
+        jPanel.add(actionBar.getComponent(), WEST);
 
         return jPanel;
     }
