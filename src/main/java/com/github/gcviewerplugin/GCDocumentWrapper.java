@@ -1,6 +1,6 @@
 package com.github.gcviewerplugin;
 
-import com.github.gcviewerplugin.actions.ToggleBooleanAction;
+import com.github.gcviewerplugin.action.ToggleBooleanAction;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -8,6 +8,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.util.IconLoader;
+import com.tagtraum.perf.gcviewer.ctrl.action.Export;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,7 @@ import java.util.ResourceBundle;
 import static com.github.gcviewerplugin.Util.getNormalizedName;
 import static com.github.gcviewerplugin.Util.getPropertyChangeListener;
 import static com.github.gcviewerplugin.Util.getResourceBundle;
+import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.Refresh;
 import static com.intellij.icons.AllIcons.General.Settings;
@@ -55,11 +57,10 @@ public class GCDocumentWrapper {
                 ShowSettingsUtil.getInstance().showSettingsDialog(null, (String) null);
             }
         });
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.reload.text"), resourceBundle.getString("action.reload.description"), Refresh) {
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.export.text"), resourceBundle.getString("action.export.description"), Menu_saveall) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ModelLoaderController modelLoaderController = getPropertyChangeListener(gcDocument, ModelLoaderController.class);
-                modelLoaderController.reload(gcDocument);
+                new Export(new MockedGCViewerGui(gcDocument)).actionPerformed(null);
             }
         });
         defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.dataPanel.text"), resourceBundle.getString("action.dataPanel.description"), PreviewDetails, false) {
@@ -67,6 +68,13 @@ public class GCDocumentWrapper {
             public void setSelected(@NotNull AnActionEvent e, boolean state) {
                 super.setSelected(e, state);
                 gcDocument.setShowModelMetricsPanel(!state);
+            }
+        });
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.reload.text"), resourceBundle.getString("action.reload.description"), Refresh) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                ModelLoaderController modelLoaderController = getPropertyChangeListener(gcDocument, ModelLoaderController.class);
+                modelLoaderController.reload(gcDocument);
             }
         });
         final ActionToolbar actionBar = ActionManager.getInstance().createActionToolbar("gcview", defaultActionGroup, false);

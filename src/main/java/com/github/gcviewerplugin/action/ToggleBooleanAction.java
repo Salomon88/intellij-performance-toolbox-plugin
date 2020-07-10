@@ -1,4 +1,4 @@
-package com.github.gcviewerplugin.actions;
+package com.github.gcviewerplugin.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
