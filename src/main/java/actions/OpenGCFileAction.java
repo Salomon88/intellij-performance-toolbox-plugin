@@ -1,8 +1,7 @@
 package actions;
 
 import com.github.gcviewerplugin.GCDocumentWrapper;
-import com.github.gcviewerplugin.GCModelLoaderController;
-import com.github.gcviewerplugin.MockedGCViewerGui;
+import com.github.gcviewerplugin.ModelLoaderController;
 import com.intellij.execution.Executor;
 import com.intellij.execution.executors.DefaultRunExecutor;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
@@ -13,23 +12,14 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task.Backgroundable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
-import com.tagtraum.perf.gcviewer.ctrl.impl.GCDocumentController;
-import com.tagtraum.perf.gcviewer.ctrl.impl.GCModelLoaderFactory;
-import com.tagtraum.perf.gcviewer.ctrl.impl.ViewMenuController;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
-import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import org.jetbrains.annotations.NotNull;
 
-import static com.github.gcviewerplugin.Util.getNormalizedName;
 import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
 import static com.intellij.openapi.fileChooser.FileChooser.chooseFiles;
 import static java.util.Arrays.stream;
@@ -80,23 +70,7 @@ public class OpenGCFileAction extends AnAction {
     }
 
     private void startGcViewer(Project project, GCResource gcResource) {
-        ApplicationManager.getApplication().invokeLater(() -> {
-            ProgressManager.getInstance().run(new Backgroundable(project, "Parsing " + getNormalizedName(gcResource), true) {
-                @Override
-                public void run(@NotNull ProgressIndicator indicator) {
-                    final GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
-                    // TODO store in plugin
-                    GCPreferences gcPreferences = new GCPreferences();
-                    GCDocument gcDocument = new GCDocument(gcPreferences, gcResource.getResourceName());
-                    GCDocumentController docController = new GCDocumentController(gcDocument);
-                    docController.addGCResource(gcModelLoader, new ViewMenuController(new MockedGCViewerGui()));
-
-                    try {
-                        new GCModelLoaderController(gcModelLoader, gcResource, indicator).run();
-                        addToConsoleView(project, gcDocument);
-                    } catch (InterruptedException e) {/* it is ok on cancel */}
-                }
-            });
-        });
+        ModelLoaderController modelLoaderController = new ModelLoaderController(project);
+        modelLoaderController.open(gcResource, this::addToConsoleView);
     }
 }

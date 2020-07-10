@@ -1,8 +1,15 @@
 package com.github.gcviewerplugin;
 
 import com.tagtraum.perf.gcviewer.model.GCResource;
+import com.tagtraum.perf.gcviewer.view.GCDocument;
+
+import java.beans.PropertyChangeListener;
 
 public class Util {
+
+    public static String getNormalizedName(GCDocument gcDocument) {
+        return getNormalizedName(gcDocument.getGCResources().get(0));
+    }
 
     public static String getNormalizedName(GCResource gcResource) {
         String name = gcResource.getResourceName().replaceAll("\\\\", "/");
@@ -12,5 +19,15 @@ public class Util {
         }
 
         return name;
+    }
+
+    public static <T extends PropertyChangeListener> T getPropertyChangeListener(GCDocument document, Class<T> clazz) {
+        for (PropertyChangeListener listener : document.getPropertyChangeListeners()) {
+            if (clazz.isInstance(listener)) {
+                return clazz.cast(listener);
+            }
+        }
+
+        throw new IllegalStateException("Failed to find listener of class " + clazz);
     }
 }
