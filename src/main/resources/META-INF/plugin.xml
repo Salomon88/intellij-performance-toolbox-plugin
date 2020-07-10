@@ -17,4 +17,10 @@
             <add-to-group group-id="InspectCodeGroup"/>
         </action>
     </actions>
+
+    <application-components>
+        <component>
+            <implementation-class>com.github.gcviewerplugin.PreferencesComponent</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>

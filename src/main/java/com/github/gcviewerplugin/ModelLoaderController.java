@@ -12,7 +12,6 @@ import com.tagtraum.perf.gcviewer.ctrl.impl.GCModelLoaderFactory;
 import com.tagtraum.perf.gcviewer.ctrl.impl.ViewMenuController;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
-import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeEvent;
@@ -43,9 +42,8 @@ public class ModelLoaderController implements PropertyChangeListener {
     public void open(GCResource gcResource, BiConsumer<Project, GCDocument> consoleViewAdder) {
         ModelLoaderGroupTracker tracker = new ModelLoaderGroupTrackerImpl(getNormalizedName(gcResource));
         GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
-        // TODO store in plugin
-        GCPreferences gcPreferences = new GCPreferences();
-        GCDocument gcDocument = new GCDocument(gcPreferences, gcResource.getResourceName());
+        PreferencesComponent preferencesComponent = ApplicationManager.getApplication().getComponent(PreferencesComponent.class);
+        GCDocument gcDocument = new GCDocument(new Preferences(preferencesComponent), gcResource.getResourceName());
         gcDocument.addPropertyChangeListener(this);
         GCDocumentController docController = new GCDocumentController(gcDocument);
         docController.addGCResource(gcModelLoader, new ViewMenuController(new MockedGCViewerGui()));
