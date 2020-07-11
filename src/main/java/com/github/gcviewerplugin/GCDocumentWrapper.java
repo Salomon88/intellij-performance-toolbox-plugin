@@ -1,6 +1,7 @@
 package com.github.gcviewerplugin;
 
 import com.github.gcviewerplugin.action.ToggleBooleanAction;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -41,7 +42,7 @@ import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_YOUNG_MEM
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 
-public class GCDocumentWrapper {
+public class GCDocumentWrapper implements Disposable {
 
     private GCDocument gcDocument;
     private JComponent component;
@@ -69,7 +70,8 @@ public class GCDocumentWrapper {
     /**
      * Releases all associated resources on tab close
      */
-    public void release() {
+    @Override
+    public void dispose() {
         getApplication().getComponent(PreferencesComponent.class).removePropertyChangeListener(propertyChangeListener);
     }
 

@@ -13,6 +13,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
@@ -60,6 +61,10 @@ public class OpenGCFileAction extends AnAction {
             final ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
             final GCDocumentWrapper gcDocumentWrapper = new GCDocumentWrapper(gcDocument);
             final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcDocumentWrapper.getComponent(), gcDocumentWrapper.getDisplayName(), gcDocumentWrapper.getIcon()) {
+                {
+                    Disposer.register(this, gcDocumentWrapper);
+                }
+
                 @Override
                 public boolean isContentReuseProhibited() {
                     return true;
