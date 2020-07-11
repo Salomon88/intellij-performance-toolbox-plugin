@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeListener;
 import java.util.ResourceBundle;
 
 import static com.github.gcviewerplugin.Util.getNormalizedName;
@@ -23,6 +24,20 @@ import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.Refresh;
 import static com.intellij.icons.AllIcons.General.Settings;
+import static com.intellij.openapi.application.ApplicationManager.getApplication;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.ANTI_ALIAS;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.CONCURRENT_COLLECTION_BEGIN_END;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.FULL_GC_LINES;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.GC_TIMES_LINE;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.GC_TIMES_RECTANGLES;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.INC_GC_LINES;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.INITIAL_MARK_LEVEL;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.SHOW_DATE_STAMP;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.TENURED_MEMORY;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.TOTAL_MEMORY;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_MEMORY;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_TENURED_MEMORY;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_YOUNG_MEMORY;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 
@@ -30,10 +45,13 @@ public class GCDocumentWrapper {
 
     private GCDocument gcDocument;
     private JComponent component;
+    private PropertyChangeListener propertyChangeListener;
 
     public GCDocumentWrapper(GCDocument gcDocument) {
         this.gcDocument = gcDocument;
         this.component = initComponent();
+        this.propertyChangeListener = initPropertyChangeListener();
+        getApplication().getComponent(PreferencesComponent.class).addPropertyChangeListener(propertyChangeListener);
     }
 
     public Icon getIcon() {
@@ -46,6 +64,13 @@ public class GCDocumentWrapper {
 
     public String getDisplayName() {
         return getNormalizedName(gcDocument);
+    }
+
+    /**
+     * Releases all associated resources on tab close
+     */
+    public void release() {
+        getApplication().getComponent(PreferencesComponent.class).removePropertyChangeListener(propertyChangeListener);
     }
 
     private JPanel initComponent() {
@@ -84,5 +109,53 @@ public class GCDocumentWrapper {
         jPanel.add(actionBar.getComponent(), WEST);
 
         return jPanel;
+    }
+
+    private PropertyChangeListener initPropertyChangeListener() {
+        return evt -> {
+            switch (evt.getPropertyName()) {
+                case ANTI_ALIAS:
+                    gcDocument.getModelChart().setAntiAlias((boolean) evt.getNewValue());
+                    break;
+                case CONCURRENT_COLLECTION_BEGIN_END:
+                    gcDocument.getModelChart().setShowConcurrentCollectionBeginEnd((boolean) evt.getNewValue());
+                    break;
+                case FULL_GC_LINES:
+                    gcDocument.getModelChart().setShowFullGCLines((boolean) evt.getNewValue());
+                    break;
+                case INC_GC_LINES:
+                    gcDocument.getModelChart().setShowIncGCLines((boolean) evt.getNewValue());
+                    break;
+                case INITIAL_MARK_LEVEL:
+                    gcDocument.getModelChart().setShowInitialMarkLevel((boolean) evt.getNewValue());
+                    break;
+                case GC_TIMES_LINE:
+                    gcDocument.getModelChart().setShowGCTimesLine((boolean) evt.getNewValue());
+                    break;
+                case GC_TIMES_RECTANGLES:
+                    gcDocument.getModelChart().setShowGCTimesRectangles((boolean) evt.getNewValue());
+                    break;
+                case SHOW_DATE_STAMP:
+                    gcDocument.getModelChart().setShowDateStamp((boolean) evt.getNewValue());
+                    break;
+                case TENURED_MEMORY:
+                    gcDocument.getModelChart().setShowTenured((boolean) evt.getNewValue());
+                    break;
+                case TOTAL_MEMORY:
+                    gcDocument.getModelChart().setShowTotalMemoryLine((boolean) evt.getNewValue());
+                    break;
+                case USED_MEMORY:
+                    gcDocument.getModelChart().setShowUsedMemoryLine((boolean) evt.getNewValue());
+                    break;
+                case USED_TENURED_MEMORY:
+                    gcDocument.getModelChart().setShowUsedTenuredMemoryLine((boolean) evt.getNewValue());
+                    break;
+                case USED_YOUNG_MEMORY:
+                    gcDocument.getModelChart().setShowUsedYoungMemoryLine((boolean) evt.getNewValue());
+                    break;
+                default:
+                    break;
+            }
+        };
     }
 }
