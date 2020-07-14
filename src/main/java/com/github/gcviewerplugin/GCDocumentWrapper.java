@@ -1,16 +1,14 @@
 package com.github.gcviewerplugin;
 
 import com.github.gcviewerplugin.action.ToggleBooleanAction;
+import com.github.gcviewerplugin.action.ToggleZoomAction;
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.util.IconLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
+import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -25,6 +23,7 @@ import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.Refresh;
 import static com.intellij.icons.AllIcons.General.Settings;
+import static com.intellij.icons.AllIcons.General.ZoomIn;
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.ANTI_ALIAS;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.CONCURRENT_COLLECTION_BEGIN_END;
@@ -67,6 +66,10 @@ public class GCDocumentWrapper implements Disposable {
         return getNormalizedName(gcDocument);
     }
 
+    public ModelChart getModelChart() {
+        return gcDocument.getModelChart();
+    }
+
     /**
      * Releases all associated resources on tab close
      */
@@ -104,6 +107,9 @@ public class GCDocumentWrapper implements Disposable {
                 modelLoaderController.reload(gcDocument);
             }
         });
+
+        defaultActionGroup.add(new ToggleZoomAction.ZoomActionGroup(this));
+
         final ActionToolbar actionBar = ActionManager.getInstance().createActionToolbar("gcview", defaultActionGroup, false);
         final JPanel jPanel = new JPanel();
         jPanel.setLayout(new BorderLayout());
