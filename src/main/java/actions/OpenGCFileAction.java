@@ -59,7 +59,7 @@ public class OpenGCFileAction extends AnAction {
         ApplicationManager.getApplication().invokeLater(() -> {
             final Executor executor = DefaultRunExecutor.getRunExecutorInstance();
             final ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
-            final GCDocumentWrapper gcDocumentWrapper = new GCDocumentWrapper(gcDocument);
+            final GCDocumentWrapper gcDocumentWrapper = new GCDocumentWrapper(gcDocument, project);
             final RunContentDescriptor descriptor = new RunContentDescriptor(consoleView, null, gcDocumentWrapper.getComponent(), gcDocumentWrapper.getDisplayName(), gcDocumentWrapper.getIcon()) {
                 {
                     Disposer.register(this, gcDocumentWrapper);

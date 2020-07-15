@@ -5,6 +5,7 @@ import com.github.gcviewerplugin.action.ToggleZoomAction;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.options.ShowSettingsUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
@@ -42,14 +43,16 @@ import static java.awt.BorderLayout.WEST;
 
 public class GCDocumentWrapper implements Disposable {
 
+    private final Project project;
     private GCDocument gcDocument;
     private JComponent component;
     private PropertyChangeListener propertyChangeListener;
 
-    public GCDocumentWrapper(GCDocument gcDocument) {
+    public GCDocumentWrapper(GCDocument gcDocument, Project project) {
         this.gcDocument = gcDocument;
         this.component = initComponent();
         this.propertyChangeListener = initPropertyChangeListener();
+        this.project = project;
         getApplication().getComponent(PreferencesComponent.class).addPropertyChangeListener(propertyChangeListener);
     }
 
@@ -83,7 +86,7 @@ public class GCDocumentWrapper implements Disposable {
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.settings.text"), resourceBundle.getString("action.settings.description"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(null, (String) null);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, getResourceBundle().getString("action.settings.window.name"));
             }
         });
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.export.text"), resourceBundle.getString("action.export.description"), Menu_saveall) {
