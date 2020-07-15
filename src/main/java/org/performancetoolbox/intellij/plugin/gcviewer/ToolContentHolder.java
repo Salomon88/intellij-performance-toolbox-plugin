@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.options.ShowSettingsUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
@@ -46,14 +47,16 @@ import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBund
 
 public class ToolContentHolder implements ToolContentHoldable {
 
+    private final Project project;
     private GCDocument gcDocument;
     private JComponent component;
     private PropertyChangeListener propertyChangeListener;
 
-    public ToolContentHolder(GCDocument gcDocument) {
+    public ToolContentHolder(GCDocument gcDocument, Project project) {
         this.gcDocument = gcDocument;
         this.component = initComponent();
         this.propertyChangeListener = initPropertyChangeListener();
+        this.project = project;
         getApplication().getComponent(PreferencesComponent.class).addPropertyChangeListener(propertyChangeListener);
     }
 
@@ -87,7 +90,7 @@ public class ToolContentHolder implements ToolContentHoldable {
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.settings.text"), resourceBundle.getString("action.gc.settings.description"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(null, (String) null);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, getResourceBundle().getString("action.settings.window.name"));
             }
         });
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.export.text"), resourceBundle.getString("action.gc.export.description"), Menu_saveall) {
