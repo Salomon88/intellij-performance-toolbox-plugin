@@ -8,14 +8,15 @@ import com.intellij.openapi.actionSystem.ToggleAction;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.icons.AllIcons.General.ZoomIn;
+import static java.lang.Double.parseDouble;
 
 public class ToggleZoomAction extends ToggleAction {
 
-    private  final GCDocumentWrapper gcDocWrapper;
+    private final GCDocumentWrapper gcDocWrapper;
 
     public ToggleZoomAction(GCDocumentWrapper gcDocWrapper, ZoomPercent zoomPercent) {
-       super(zoomPercent.getValue());
-       this.gcDocWrapper = gcDocWrapper;
+        super(zoomPercent.getValue());
+        this.gcDocWrapper = gcDocWrapper;
     }
 
     @Override
@@ -30,18 +31,18 @@ public class ToggleZoomAction extends ToggleAction {
 
     private double getScale(@NotNull AnActionEvent e) {
         String rawScale = e.getPresentation().getText();
-        return Double.valueOf(rawScale.substring(0,rawScale.length()-1));
+        return parseDouble(rawScale.substring(0, rawScale.length() - 1));
     }
 
- public static class ZoomActionGroup extends DefaultActionGroup {
-      public ZoomActionGroup(GCDocumentWrapper gcDocumentWrapper) {
-          super(Util.getResourceBundle().getString("action.zoom.text"),true);
-          getTemplatePresentation().setIcon(ZoomIn);
-          for (ZoomPercent percent : ZoomPercent.values()) {
-              add(new ToggleZoomAction(gcDocumentWrapper, percent));
-          }
-      }
- }
+    public static class ZoomActionGroup extends DefaultActionGroup {
+        public ZoomActionGroup(GCDocumentWrapper gcDocumentWrapper) {
+            super(Util.getResourceBundle().getString("action.zoom.text"), true);
+            getTemplatePresentation().setIcon(ZoomIn);
+            for (ZoomPercent percent : ZoomPercent.values()) {
+                add(new ToggleZoomAction(gcDocumentWrapper, percent));
+            }
+        }
+    }
 
     private enum ZoomPercent {
         Z1("1%"),
@@ -56,12 +57,13 @@ public class ToggleZoomAction extends ToggleAction {
         Z5000("5000%");
 
         final String value;
+
         ZoomPercent(String s) {
-          this.value = s;
+            this.value = s;
         }
+
         public String getValue() {
             return value;
         }
     }
 }
-
