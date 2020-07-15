@@ -1,6 +1,7 @@
 package com.github.gcviewerplugin.action;
 
 import com.github.gcviewerplugin.GCDocumentWrapper;
+import com.github.gcviewerplugin.Util;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.ToggleAction;
@@ -29,13 +30,12 @@ public class ToggleZoomAction extends ToggleAction {
 
     private double getScale(@NotNull AnActionEvent e) {
         String rawScale = e.getPresentation().getText();
-        System.out.println("rawScale "+rawScale);
         return Double.valueOf(rawScale.substring(0,rawScale.length()-1));
     }
 
  public static class ZoomActionGroup extends DefaultActionGroup {
       public ZoomActionGroup(GCDocumentWrapper gcDocumentWrapper) {
-          super("Zoom",true);
+          super(Util.getResourceBundle().getString("action.zoom.text"),true);
           getTemplatePresentation().setIcon(ZoomIn);
           for (ZoomPercent percent : ZoomPercent.values()) {
               add(new ToggleZoomAction(gcDocumentWrapper, percent));

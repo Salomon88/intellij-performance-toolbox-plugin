@@ -23,7 +23,6 @@ import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.Refresh;
 import static com.intellij.icons.AllIcons.General.Settings;
-import static com.intellij.icons.AllIcons.General.ZoomIn;
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.ANTI_ALIAS;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.CONCURRENT_COLLECTION_BEGIN_END;
