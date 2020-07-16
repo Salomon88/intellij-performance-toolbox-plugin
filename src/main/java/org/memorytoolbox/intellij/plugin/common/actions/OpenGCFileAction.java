@@ -1,7 +1,5 @@
-package actions;
+package org.memorytoolbox.intellij.plugin.common.actions;
 
-import com.github.gcviewerplugin.GCDocumentWrapper;
-import com.github.gcviewerplugin.ModelLoaderController;
 import com.intellij.execution.Executor;
 import com.intellij.execution.executors.DefaultRunExecutor;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
@@ -20,6 +18,8 @@ import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
+import org.memorytoolbox.intellij.plugin.gcviewer.GCDocumentWrapper;
+import org.memorytoolbox.intellij.plugin.gcviewer.ModelLoaderController;
 
 import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
 import static com.intellij.openapi.fileChooser.FileChooser.chooseFiles;

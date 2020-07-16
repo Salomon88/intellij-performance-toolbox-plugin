@@ -1,6 +1,5 @@
-package com.github.gcviewerplugin;
+package org.memorytoolbox.intellij.plugin.gcviewer;
 
-import com.github.gcviewerplugin.impl.ModelLoaderGroupTrackerImpl;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -13,6 +12,7 @@ import com.tagtraum.perf.gcviewer.ctrl.impl.ViewMenuController;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
+import org.memorytoolbox.intellij.plugin.gcviewer.impl.ModelLoaderGroupTrackerImpl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -20,11 +20,11 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.BiConsumer;
 
-import static com.github.gcviewerplugin.Util.getNormalizedName;
-import static com.github.gcviewerplugin.Util.getPropertyChangeListener;
-import static com.github.gcviewerplugin.Util.getResourceBundle;
 import static java.lang.String.format;
 import static javax.swing.SwingWorker.StateValue.DONE;
+import static org.memorytoolbox.intellij.plugin.common.Util.getNormalizedName;
+import static org.memorytoolbox.intellij.plugin.common.Util.getPropertyChangeListener;
+import static org.memorytoolbox.intellij.plugin.common.Util.getResourceBundle;
 
 public class ModelLoaderController implements PropertyChangeListener {
 

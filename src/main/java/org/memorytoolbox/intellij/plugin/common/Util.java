@@ -1,4 +1,4 @@
-package com.github.gcviewerplugin;
+package org.memorytoolbox.intellij.plugin.common;
 
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;

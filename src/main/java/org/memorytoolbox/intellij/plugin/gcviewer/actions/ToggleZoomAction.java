@@ -1,11 +1,11 @@
-package com.github.gcviewerplugin.action;
+package org.memorytoolbox.intellij.plugin.gcviewer.actions;
 
-import com.github.gcviewerplugin.GCDocumentWrapper;
-import com.github.gcviewerplugin.Util;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.ToggleAction;
 import org.jetbrains.annotations.NotNull;
+import org.memorytoolbox.intellij.plugin.common.Util;
+import org.memorytoolbox.intellij.plugin.gcviewer.GCDocumentWrapper;
 
 import static com.intellij.icons.AllIcons.General.ZoomIn;
 import static java.lang.Double.parseDouble;
