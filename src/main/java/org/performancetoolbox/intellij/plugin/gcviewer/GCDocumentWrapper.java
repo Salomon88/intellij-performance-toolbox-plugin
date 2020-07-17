@@ -1,4 +1,4 @@
-package org.memorytoolbox.intellij.plugin.gcviewer;
+package org.performancetoolbox.intellij.plugin.gcviewer;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -12,8 +12,8 @@ import com.tagtraum.perf.gcviewer.ctrl.action.Export;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
-import org.memorytoolbox.intellij.plugin.gcviewer.actions.ToggleBooleanAction;
-import org.memorytoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
+import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleBooleanAction;
+import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,9 +40,9 @@ import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_TENURED_M
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_YOUNG_MEMORY;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
-import static org.memorytoolbox.intellij.plugin.common.Util.getNormalizedName;
-import static org.memorytoolbox.intellij.plugin.common.Util.getPropertyChangeListener;
-import static org.memorytoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedName;
+import static org.performancetoolbox.intellij.plugin.common.Util.getPropertyChangeListener;
+import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 
 public class GCDocumentWrapper implements Disposable {
 

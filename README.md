@@ -1,4 +1,4 @@
-# Memory Toolbox Plugin for JetBrains IntelliJ IDEA
+# Performance Toolbox Plugin for JetBrains IntelliJ IDEA
 
 Compatible with IntelliJ IDEA version __2020.1.1 and up__.
 

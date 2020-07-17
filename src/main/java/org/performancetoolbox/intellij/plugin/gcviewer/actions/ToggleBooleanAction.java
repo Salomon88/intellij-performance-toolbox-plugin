@@ -1,4 +1,4 @@
-package org.memorytoolbox.intellij.plugin.gcviewer.actions;
+package org.performancetoolbox.intellij.plugin.gcviewer.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;

@@ -8,7 +8,7 @@ wrapper {
     gradleVersion = '6.5'
 }
 
-group 'org.example'
+group 'org.performancetoolbox'
 version '1.0-SNAPSHOT'
 
 repositories {

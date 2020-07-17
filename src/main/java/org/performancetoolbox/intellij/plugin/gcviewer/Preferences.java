@@ -1,4 +1,4 @@
-package org.memorytoolbox.intellij.plugin.gcviewer;
+package org.performancetoolbox.intellij.plugin.gcviewer;
 
 import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 

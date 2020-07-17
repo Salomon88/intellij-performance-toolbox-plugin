@@ -1,7 +1,7 @@
 <idea-plugin>
-    <id>org.memorytoolbox</id>
-    <name>Memory Toolbox</name>
-    <vendor email="slamosha@yandex.ru">xCompany</vendor>
+    <id>Performance Toolbox</id>
+    <name>Performance Toolbox</name>
+    <vendor email="slamosha@yandex.ru">Alexey Kryuchkov, Nikolay Khramchenkov</vendor>
 
     <description><![CDATA[
         <p>This plugin introduces tools that help you to analyze and troubleshoot various memory related issues in JVM applications without leaving the IDE.</p>
@@ -19,7 +19,7 @@
     </extensions>
 
     <actions>
-        <action id="OpenGCFileAction" class="org.memorytoolbox.intellij.plugin.common.actions.OpenGCFileAction" text="_Garbage Collector Log...">
+        <action id="OpenGCFileAction" class="org.performancetoolbox.intellij.plugin.common.actions.OpenGCFileAction" text="_Garbage Collector Log...">
             <add-to-group group-id="AnalyzePlatformMenu"/>
             <add-to-group group-id="InspectCodeGroup"/>
         </action>
@@ -27,7 +27,7 @@
 
     <application-components>
         <component>
-            <implementation-class>org.memorytoolbox.intellij.plugin.gcviewer.PreferencesComponent</implementation-class>
+            <implementation-class>org.performancetoolbox.intellij.plugin.gcviewer.PreferencesComponent</implementation-class>
         </component>
     </application-components>
 </idea-plugin>

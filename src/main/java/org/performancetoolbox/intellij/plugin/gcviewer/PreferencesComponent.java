@@ -1,4 +1,4 @@
-package org.memorytoolbox.intellij.plugin.gcviewer;
+package org.performancetoolbox.intellij.plugin.gcviewer;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;

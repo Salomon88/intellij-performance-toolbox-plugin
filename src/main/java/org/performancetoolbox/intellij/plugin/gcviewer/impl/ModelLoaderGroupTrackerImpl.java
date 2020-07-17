@@ -1,9 +1,9 @@
-package org.memorytoolbox.intellij.plugin.gcviewer.impl;
+package org.performancetoolbox.intellij.plugin.gcviewer.impl;
 
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-import org.memorytoolbox.intellij.plugin.gcviewer.ModelLoaderGroupTracker;
+import org.performancetoolbox.intellij.plugin.gcviewer.ModelLoaderGroupTracker;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

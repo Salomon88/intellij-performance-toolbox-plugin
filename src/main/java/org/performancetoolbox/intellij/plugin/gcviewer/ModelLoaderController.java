@@ -1,4 +1,4 @@
-package org.memorytoolbox.intellij.plugin.gcviewer;
+package org.performancetoolbox.intellij.plugin.gcviewer;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -12,7 +12,8 @@ import com.tagtraum.perf.gcviewer.ctrl.impl.ViewMenuController;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
-import org.memorytoolbox.intellij.plugin.gcviewer.impl.ModelLoaderGroupTrackerImpl;
+import org.performancetoolbox.intellij.plugin.common.Util;
+import org.performancetoolbox.intellij.plugin.gcviewer.impl.ModelLoaderGroupTrackerImpl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -22,9 +23,6 @@ import java.util.function.BiConsumer;
 
 import static java.lang.String.format;
 import static javax.swing.SwingWorker.StateValue.DONE;
-import static org.memorytoolbox.intellij.plugin.common.Util.getNormalizedName;
-import static org.memorytoolbox.intellij.plugin.common.Util.getPropertyChangeListener;
-import static org.memorytoolbox.intellij.plugin.common.Util.getResourceBundle;
 
 public class ModelLoaderController implements PropertyChangeListener {
 
@@ -40,7 +38,7 @@ public class ModelLoaderController implements PropertyChangeListener {
     }
 
     public void open(GCResource gcResource, BiConsumer<Project, GCDocument> consoleViewAdder) {
-        ModelLoaderGroupTracker tracker = new ModelLoaderGroupTrackerImpl(getNormalizedName(gcResource));
+        ModelLoaderGroupTracker tracker = new ModelLoaderGroupTrackerImpl(Util.getNormalizedName(gcResource));
         GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
         PreferencesComponent preferencesComponent = ApplicationManager.getApplication().getComponent(PreferencesComponent.class);
         GCDocument gcDocument = new GCDocument(new Preferences(preferencesComponent), gcResource.getResourceName());
@@ -53,14 +51,14 @@ public class ModelLoaderController implements PropertyChangeListener {
     }
 
     public void reload(GCDocument gcDocument) {
-        ModelLoaderGroupTracker tracker = new ModelLoaderGroupTrackerImpl(getNormalizedName(gcDocument));
+        ModelLoaderGroupTracker tracker = new ModelLoaderGroupTrackerImpl(Util.getNormalizedName(gcDocument));
 
         for (GCResource gcResource : gcDocument.getGCResources()) {
             if (gcResource.hasUnderlyingResourceChanged()) {
                 gcResource.reset();
                 gcResource.setIsReload(true);
                 GCModelLoader loader = GCModelLoaderFactory.createFor(gcResource);
-                GCDocumentController docController = getPropertyChangeListener(gcDocument, GCDocumentController.class);
+                GCDocumentController docController = Util.getPropertyChangeListener(gcDocument, GCDocumentController.class);
                 docController.reloadGCResource(loader);
                 tracker.addGcModelLoader(loader);
             }
@@ -70,7 +68,7 @@ public class ModelLoaderController implements PropertyChangeListener {
     }
 
     private void doInBackground(ModelLoaderGroupTracker tracker, Runnable successAction) {
-        final ResourceBundle resourceBundle = getResourceBundle();
+        final ResourceBundle resourceBundle = Util.getResourceBundle();
         ApplicationManager.getApplication().invokeLater(() -> ProgressManager.getInstance().run(new Backgroundable(project, format(resourceBundle.getString("parsing.text"), tracker.getName()), true) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
