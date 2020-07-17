@@ -1,4 +1,4 @@
-package org.performancetoolbox.intellij.plugin.common.actions;
+package org.performancetoolbox.intellij.plugin.gcviewer.actions;
 
 import com.intellij.execution.Executor;
 import com.intellij.execution.executors.DefaultRunExecutor;

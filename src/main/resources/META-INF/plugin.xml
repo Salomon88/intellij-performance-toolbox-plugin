@@ -19,7 +19,7 @@
     </extensions>
 
     <actions>
-        <action id="OpenGCFileAction" class="org.performancetoolbox.intellij.plugin.common.actions.OpenGCFileAction" text="_Garbage Collector Log...">
+        <action id="OpenGCFileAction" class="org.performancetoolbox.intellij.plugin.gcviewer.actions.OpenGCFileAction" text="_Garbage Collector Log...">
             <add-to-group group-id="AnalyzePlatformMenu"/>
             <add-to-group group-id="InspectCodeGroup"/>
         </action>
