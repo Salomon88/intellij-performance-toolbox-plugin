@@ -1,4 +1,4 @@
-package com.github.gcviewerplugin;
+package org.memorytoolbox.intellij.plugin.gcviewer;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;

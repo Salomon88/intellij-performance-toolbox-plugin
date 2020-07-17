@@ -1,9 +1,11 @@
-package com.github.gcviewerplugin;
+package org.memorytoolbox.intellij.plugin.gcviewer;
 
-import com.github.gcviewerplugin.action.ToggleBooleanAction;
-import com.github.gcviewerplugin.action.ToggleZoomAction;
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
@@ -11,15 +13,14 @@ import com.tagtraum.perf.gcviewer.ctrl.action.Export;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
+import org.memorytoolbox.intellij.plugin.gcviewer.actions.ToggleBooleanAction;
+import org.memorytoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.util.ResourceBundle;
 
-import static com.github.gcviewerplugin.Util.getNormalizedName;
-import static com.github.gcviewerplugin.Util.getPropertyChangeListener;
-import static com.github.gcviewerplugin.Util.getResourceBundle;
 import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.Refresh;
@@ -40,6 +41,9 @@ import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_TENURED_M
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_YOUNG_MEMORY;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
+import static org.memorytoolbox.intellij.plugin.common.Util.getNormalizedName;
+import static org.memorytoolbox.intellij.plugin.common.Util.getPropertyChangeListener;
+import static org.memorytoolbox.intellij.plugin.common.Util.getResourceBundle;
 
 public class GCDocumentWrapper implements Disposable {
 
