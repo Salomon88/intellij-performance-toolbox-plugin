@@ -1,9 +1,8 @@
-package org.performancetoolbox.intellij.plugin.gcviewer.impl;
+package org.performancetoolbox.intellij.plugin.common.impl;
 
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
-import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
-import org.performancetoolbox.intellij.plugin.gcviewer.ModelLoaderGroupTracker;
+import org.performancetoolbox.intellij.plugin.common.ToolContentDataLoadable;
+import org.performancetoolbox.intellij.plugin.common.ToolContentDataLoaderGroupTracker;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -14,14 +13,14 @@ import java.util.Map;
 import static javax.swing.SwingWorker.StateValue.DONE;
 import static javax.swing.SwingWorker.StateValue.STARTED;
 
-public class ModelLoaderGroupTrackerImpl implements ModelLoaderGroupTracker {
+public class ToolContentDataLoaderGroupTrackerImpl implements ToolContentDataLoaderGroupTracker {
 
-    private final Map<GCModelLoader, State> progressStates = new HashMap<>();
+    private final Map<ToolContentDataLoadable, State> progressStates = new HashMap<>();
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private final String name;
     private int currentProgress = 0;
 
-    public ModelLoaderGroupTrackerImpl(String name) {
+    public ToolContentDataLoaderGroupTrackerImpl(String name) {
         this.name = name;
     }
 
@@ -31,7 +30,7 @@ public class ModelLoaderGroupTrackerImpl implements ModelLoaderGroupTracker {
     }
 
     @Override
-    public void addGcModelLoader(GCModelLoader loader) {
+    public void addModelLoader(ToolContentDataLoadable loader) {
         loader.addPropertyChangeListener(this);
         progressStates.put(loader, new State(loader));
     }
@@ -39,15 +38,7 @@ public class ModelLoaderGroupTrackerImpl implements ModelLoaderGroupTracker {
     @Override
     public void cancel() {
         progressStates.forEach((loader, state) -> {
-            GCResource gcResource = loader.getGcResource();
-
-            if (gcResource instanceof GcResourceSeries) {
-                for (GCResource resource : ((GcResourceSeries) gcResource).getResourcesInOrder()) {
-                    resource.setIsReadCancelled(true);
-                }
-            } else {
-                gcResource.setIsReadCancelled(true);
-            }
+            loader.cancel();
         });
     }
 
@@ -62,7 +53,7 @@ public class ModelLoaderGroupTrackerImpl implements ModelLoaderGroupTracker {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        GCModelLoader loader = (GCModelLoader) evt.getSource();
+        ToolContentDataLoadable loader = (ToolContentDataLoadable) evt.getSource();
         State state = progressStates.get(loader);
 
         if ("state".equals(evt.getPropertyName()) && DONE == evt.getNewValue()) {
@@ -95,7 +86,7 @@ public class ModelLoaderGroupTrackerImpl implements ModelLoaderGroupTracker {
     private void fireProgressChanged() {
         int current = 0, total = 0;
 
-        for (Map.Entry<GCModelLoader, State> entry : progressStates.entrySet()) {
+        for (Map.Entry<ToolContentDataLoadable, State> entry : progressStates.entrySet()) {
             State state = entry.getValue();
             current += 100 * state.completedResources + state.partial;
             total += 100 * state.totalResources;
@@ -115,15 +106,15 @@ public class ModelLoaderGroupTrackerImpl implements ModelLoaderGroupTracker {
     }
 
     private class State {
-        GCModelLoader loader;
+        ToolContentDataLoadable loader;
         int completedResources;
         int partial;
         int totalResources;
 
-        State(GCModelLoader loader) {
+        State(ToolContentDataLoadable loader) {
             this.loader = loader;
-            this.totalResources = loader.getGcResource() instanceof GcResourceSeries
-                    ? ((GcResourceSeries) loader.getGcResource()).getResourcesInOrder().size()
+            this.totalResources = loader.getContentData() instanceof GcResourceSeries
+                    ? ((GcResourceSeries) loader.getContentData()).getResourcesInOrder().size()
                     : 1;
         }
     }

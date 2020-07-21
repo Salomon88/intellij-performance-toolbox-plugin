@@ -1,14 +1,12 @@
-package org.performancetoolbox.intellij.plugin.gcviewer;
-
-import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
+package org.performancetoolbox.intellij.plugin.common;
 
 import java.beans.PropertyChangeListener;
 
-public interface ModelLoaderGroupTracker extends PropertyChangeListener {
+public interface ToolContentDataLoaderGroupTracker extends PropertyChangeListener {
 
     String getName();
 
-    void addGcModelLoader(GCModelLoader loader);
+    void addModelLoader(ToolContentDataLoadable loader);
 
     void execute();
 
