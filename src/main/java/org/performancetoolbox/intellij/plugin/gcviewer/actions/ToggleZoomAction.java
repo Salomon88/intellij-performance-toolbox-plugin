@@ -5,28 +5,28 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.ToggleAction;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.Util;
-import org.performancetoolbox.intellij.plugin.gcviewer.GCDocumentWrapper;
+import org.performancetoolbox.intellij.plugin.gcviewer.ToolContentHolder;
 
 import static com.intellij.icons.AllIcons.General.ZoomIn;
 import static java.lang.Double.parseDouble;
 
 public class ToggleZoomAction extends ToggleAction {
 
-    private final GCDocumentWrapper gcDocWrapper;
+    private final ToolContentHolder toolContentHolder;
 
-    public ToggleZoomAction(GCDocumentWrapper gcDocWrapper, ZoomPercent zoomPercent) {
+    public ToggleZoomAction(ToolContentHolder toolContentHolder, ZoomPercent zoomPercent) {
         super(zoomPercent.getValue());
-        this.gcDocWrapper = gcDocWrapper;
+        this.toolContentHolder = toolContentHolder;
     }
 
     @Override
     public boolean isSelected(@NotNull AnActionEvent e) {
-        return gcDocWrapper.getModelChart().getScaleFactor() == getScale(e);
+        return toolContentHolder.getModelChart().getScaleFactor() == getScale(e);
     }
 
     @Override
     public void setSelected(@NotNull AnActionEvent e, boolean state) {
-        gcDocWrapper.getModelChart().setScaleFactor(getScale(e));
+        toolContentHolder.getModelChart().setScaleFactor(getScale(e));
     }
 
     private double getScale(@NotNull AnActionEvent e) {
@@ -35,11 +35,11 @@ public class ToggleZoomAction extends ToggleAction {
     }
 
     public static class ZoomActionGroup extends DefaultActionGroup {
-        public ZoomActionGroup(GCDocumentWrapper gcDocumentWrapper) {
-            super(Util.getResourceBundle().getString("action.zoom.text"), true);
+        public ZoomActionGroup(ToolContentHolder toolContentHolderImpl) {
+            super(Util.getResourceBundle().getString("action.gc.zoom.text"), true);
             getTemplatePresentation().setIcon(ZoomIn);
             for (ZoomPercent percent : ZoomPercent.values()) {
-                add(new ToggleZoomAction(gcDocumentWrapper, percent));
+                add(new ToggleZoomAction(toolContentHolderImpl, percent));
             }
         }
     }
