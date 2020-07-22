@@ -51,7 +51,11 @@ public class Util {
     }
 
     public static String getNormalizedName(GCResource gcResource) {
-        String name = gcResource.getResourceName().replaceAll("\\\\", "/");
+        return getNormalizedName(gcResource.getResourceName());
+    }
+
+    public static String getNormalizedName(String name) {
+        name = name.replaceAll("\\\\", "/");
 
         if (name.contains("/")) {
             return name.substring(name.lastIndexOf("/") + 1);
