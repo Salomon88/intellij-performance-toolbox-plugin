@@ -23,6 +23,10 @@
             <add-to-group group-id="AnalyzePlatformMenu"/>
             <add-to-group group-id="InspectCodeGroup"/>
         </action>
+
+        <action id="OpenHistogramAction" class="org.performancetoolbox.intellij.plugin.histogram.actions.OpenAction" text="_Histogram Dynamic...">
+            <add-to-group group-id="InspectCodeGroup"/>
+        </action>
     </actions>
 
     <application-components>
