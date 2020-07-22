@@ -1,19 +1,20 @@
-package org.performancetoolbox.intellij.plugin.gcviewer;
+package org.memorytoolbox.intellij.plugin.gcviewer;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.options.ShowSettingsUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
-import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
-import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleBooleanAction;
-import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
+import org.memorytoolbox.intellij.plugin.gcviewer.actions.ToggleBooleanAction;
+import org.memorytoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,20 +41,22 @@ import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_TENURED_M
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_YOUNG_MEMORY;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
-import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedName;
-import static org.performancetoolbox.intellij.plugin.common.Util.getPropertyChangeListener;
-import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.memorytoolbox.intellij.plugin.common.Util.getNormalizedName;
+import static org.memorytoolbox.intellij.plugin.common.Util.getPropertyChangeListener;
+import static org.memorytoolbox.intellij.plugin.common.Util.getResourceBundle;
 
-public class ToolContentHolder implements ToolContentHoldable {
+public class GCDocumentWrapper implements Disposable {
 
+    private final Project project;
     private GCDocument gcDocument;
     private JComponent component;
     private PropertyChangeListener propertyChangeListener;
 
-    public ToolContentHolder(GCDocument gcDocument) {
+    public GCDocumentWrapper(GCDocument gcDocument, Project project) {
         this.gcDocument = gcDocument;
         this.component = initComponent();
         this.propertyChangeListener = initPropertyChangeListener();
+        this.project = project;
         getApplication().getComponent(PreferencesComponent.class).addPropertyChangeListener(propertyChangeListener);
     }
 
@@ -84,29 +87,29 @@ public class ToolContentHolder implements ToolContentHoldable {
     private JPanel initComponent() {
         final ResourceBundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.settings.text"), resourceBundle.getString("action.gc.settings.description"), Settings) {
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.settings.text"), resourceBundle.getString("action.settings.description"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(null, (String) null);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, getResourceBundle().getString("action.settings.window.name"));
             }
         });
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.export.text"), resourceBundle.getString("action.gc.export.description"), Menu_saveall) {
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.export.text"), resourceBundle.getString("action.export.description"), Menu_saveall) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 new Export(new MockedGCViewerGui(gcDocument)).actionPerformed(null);
             }
         });
-        defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.gc.dataPanel.text"), resourceBundle.getString("action.gc.dataPanel.description"), PreviewDetails, false) {
+        defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.dataPanel.text"), resourceBundle.getString("action.dataPanel.description"), PreviewDetails, false) {
             @Override
             public void setSelected(@NotNull AnActionEvent e, boolean state) {
                 super.setSelected(e, state);
                 gcDocument.setShowModelMetricsPanel(!state);
             }
         });
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.reload.text"), resourceBundle.getString("action.gc.reload.description"), Refresh) {
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.reload.text"), resourceBundle.getString("action.reload.description"), Refresh) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ToolContentLoader modelLoaderController = getPropertyChangeListener(gcDocument, ToolContentLoader.class);
+                ModelLoaderController modelLoaderController = getPropertyChangeListener(gcDocument, ModelLoaderController.class);
                 modelLoaderController.reload(gcDocument);
             }
         });
