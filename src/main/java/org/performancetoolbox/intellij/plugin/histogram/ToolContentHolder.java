@@ -8,19 +8,18 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
-import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleBooleanAction;
+import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.ProfileMemory;
+import static com.intellij.icons.AllIcons.Actions.Show;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
-import static java.util.stream.Collectors.toList;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.SIZE;
@@ -42,26 +41,12 @@ public class ToolContentHolder implements ToolContentHoldable {
 
     @Override
     public JComponent getComponent() {
-        final HistogramTableModel histogramTableModel = new HistogramTableModel();
-        histogramTableModel.setStates(states);
+        final HistogramTableModel histogramTableModel = new HistogramTableModel(states);
         JBTable table = new JBTable(histogramTableModel);
         table.setAutoCreateRowSorter(true);
 
         final ResourceBundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
-        defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.filter.text"), resourceBundle.getString("action.histogram.filter.description"), PreviewDetails, false) {
-            @Override
-            public void setSelected(@NotNull AnActionEvent e, boolean state) {
-                super.setSelected(e, state);
-
-                if (state) {
-                    List<State> filteredStates = states.stream().filter(s -> !Objects.equals(s.getInitialSize(), s.getFinalSize())).collect(toList());
-                    histogramTableModel.setStates(filteredStates);
-                } else {
-                    histogramTableModel.setStates(states);
-                }
-            }
-        });
         defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.showType.text"), resourceBundle.getString("action.histogram.showType.description"), PreviewDetails, false) {
             @Override
             public void setSelected(@NotNull AnActionEvent e, boolean state) {
@@ -74,6 +59,28 @@ public class ToolContentHolder implements ToolContentHoldable {
                 }
             }
         });
+
+        final DefaultActionGroup filterActionGroup = new DefaultActionGroup(getResourceBundle().getString("action.histogram.filter.text"), true) {
+            {
+                getTemplatePresentation().setIcon(Show);
+                getTemplatePresentation().setDescription(getResourceBundle().getString("action.histogram.filter.description"));
+            }
+        };
+        filterActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.filterTotal.text"), resourceBundle.getString("action.histogram.filterTotal.description"), true) {
+            @Override
+            public void setSelected(@NotNull AnActionEvent e, boolean state) {
+                super.setSelected(e, state);
+                histogramTableModel.setShowTotal(state);
+            }
+        });
+        filterActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.filterUnchanged.text"), resourceBundle.getString("action.histogram.filterUnchanged.description"), true) {
+            @Override
+            public void setSelected(@NotNull AnActionEvent e, boolean state) {
+                super.setSelected(e, state);
+                histogramTableModel.setShowUnchanged(state);
+            }
+        });
+        defaultActionGroup.add(filterActionGroup);
 
         final ActionToolbar actionBar = ActionManager.getInstance().createActionToolbar("histogram", defaultActionGroup, false);
         final JPanel jPanel = new JPanel();

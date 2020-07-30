@@ -12,7 +12,7 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
-import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleBooleanAction;
+import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
 
 import javax.swing.*;

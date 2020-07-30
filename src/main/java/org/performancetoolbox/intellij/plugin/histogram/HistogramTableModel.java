@@ -1,8 +1,9 @@
 package org.performancetoolbox.intellij.plugin.histogram;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
@@ -15,8 +16,16 @@ public class HistogramTableModel extends AbstractTableModel {
         SIZE
     }
 
-    private List<State> states = new ArrayList<>();
+    private List<State> filteredStates;
+    private List<State> states;
     private SHOW_TYPE showType = SIZE;
+    private boolean showTotal = true;
+    private boolean showUnchanged = true;
+
+    public HistogramTableModel(List<State> states) {
+        this.states = states;
+        filterStates();
+    }
 
     @Override
     public String getColumnName(int columnIndex) {
@@ -28,7 +37,7 @@ public class HistogramTableModel extends AbstractTableModel {
             case 2:
                 return getResourceBundle().getString("table.histogram.initial.header");
             default:
-                return states.size() == 0 || columnIndex == (states.get(0).getDifferencesSizes().length + 3)
+                return filteredStates.size() == 0 || columnIndex == (filteredStates.get(0).getDifferencesSizes().length + 3)
                         ? getResourceBundle().getString("table.histogram.final.header")
                         : getResourceBundle().getString("table.histogram.diff.header") + " #" + (columnIndex - 2);
         }
@@ -49,39 +58,66 @@ public class HistogramTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return states.get(rowIndex).getName();
+                return filteredStates.get(rowIndex).getName();
             case 1:
-                return states.get(rowIndex).getModule();
+                return filteredStates.get(rowIndex).getModule();
             case 2:
                 return showType == INSTANCES
-                        ? states.get(rowIndex).getInitialInstances()
-                        : states.get(rowIndex).getInitialSize();
+                        ? filteredStates.get(rowIndex).getInitialInstances()
+                        : filteredStates.get(rowIndex).getInitialSize();
             default:
-                return states.size() == 0 || columnIndex == (states.get(rowIndex).getDifferencesSizes().length + 3)
-                        ? (showType == INSTANCES ? states.get(rowIndex).getFinalInstances() : states.get(rowIndex).getFinalSize())
-                        : (showType == INSTANCES ? states.get(rowIndex).getDifferencesInstances()[columnIndex - 3] : states.get(rowIndex).getDifferencesSizes()[columnIndex - 3]);
+                return states.size() == 0 || columnIndex == (filteredStates.get(rowIndex).getDifferencesSizes().length + 3)
+                        ? (showType == INSTANCES ? filteredStates.get(rowIndex).getFinalInstances() : filteredStates.get(rowIndex).getFinalSize())
+                        : (showType == INSTANCES ? filteredStates.get(rowIndex).getDifferencesInstances()[columnIndex - 3] : filteredStates.get(rowIndex).getDifferencesSizes()[columnIndex - 3]);
         }
     }
 
     @Override
     public int getColumnCount() {
-        return 4 + (states.size() == 0 ? 0 : states.get(0).getDifferencesSizes().length);
+        return 4 + (filteredStates.size() == 0 ? 0 : filteredStates.get(0).getDifferencesSizes().length);
     }
 
     @Override
     public int getRowCount() {
-        return states.size();
+        return filteredStates.size();
+    }
+
+    public void setShowTotal(boolean showTotal) {
+        if (this.showTotal != showTotal) {
+            this.showTotal = showTotal;
+            filterStates();
+            fireTableDataChanged();
+        }
     }
 
     public void setShowType(SHOW_TYPE showType) {
         if (this.showType != showType && showType != null) {
             this.showType = showType;
+            filterStates();
+            fireTableDataChanged();
+        }
+    }
+
+    public void setShowUnchanged(boolean showUnchanged) {
+        if (this.showUnchanged != showUnchanged) {
+            this.showUnchanged = showUnchanged;
+            filterStates();
             fireTableDataChanged();
         }
     }
 
     public void setStates(List<State> states) {
         this.states = states;
+        filterStates();
         fireTableDataChanged();
+    }
+
+    private void filterStates() {
+        filteredStates = states.stream()
+                .filter(state -> showTotal || !getResourceBundle().getString("table.histogram.total.name").equals(state.getName()))
+                .filter(state -> showUnchanged || showType == INSTANCES
+                        ? !Objects.equals(state.getInitialInstances(), state.getFinalInstances())
+                        : !Objects.equals(state.getInitialSize(), state.getFinalSize()))
+                .collect(Collectors.toList());
     }
 }

@@ -1,4 +1,4 @@
-package org.performancetoolbox.intellij.plugin.gcviewer.actions;
+package org.performancetoolbox.intellij.plugin.common.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
@@ -9,6 +9,12 @@ import javax.swing.*;
 public class ToggleBooleanAction extends ToggleAction {
 
     private boolean state;
+
+    public ToggleBooleanAction(String text, String description, boolean state) {
+        super(text);
+        getTemplatePresentation().setDescription(description);
+        this.state = state;
+    }
 
     public ToggleBooleanAction(String text, String description, Icon icon, boolean state) {
         super(() -> text, () -> description, icon);
