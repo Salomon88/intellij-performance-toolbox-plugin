@@ -23,3 +23,7 @@ dependencies {
 intellij {
     version '2020.1.1'
 }
+
+patchPluginXml {
+    untilBuild = '202.*'
+}
