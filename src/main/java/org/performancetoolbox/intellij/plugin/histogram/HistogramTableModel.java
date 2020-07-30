@@ -5,9 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
+import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.SIZE;
 
 public class HistogramTableModel extends AbstractTableModel {
+
+    enum SHOW_TYPE {
+        INSTANCES,
+        SIZE
+    }
+
     private List<State> states = new ArrayList<>();
+    private SHOW_TYPE showType = SIZE;
 
     @Override
     public String getColumnName(int columnIndex) {
@@ -17,11 +26,11 @@ public class HistogramTableModel extends AbstractTableModel {
             case 1:
                 return getResourceBundle().getString("table.histogram.moduleName.header");
             case 2:
-                return getResourceBundle().getString("table.histogram.initialSize.header");
+                return getResourceBundle().getString("table.histogram.initial.header");
             default:
-                return states.size() == 0 || columnIndex == (states.get(0).getDifferences().length + 3)
-                        ? getResourceBundle().getString("table.histogram.finalSize.header")
-                        : getResourceBundle().getString("table.histogram.diff.header") + " #" + (columnIndex - 3);
+                return states.size() == 0 || columnIndex == (states.get(0).getDifferencesSizes().length + 3)
+                        ? getResourceBundle().getString("table.histogram.final.header")
+                        : getResourceBundle().getString("table.histogram.diff.header") + " #" + (columnIndex - 2);
         }
     }
 
@@ -44,22 +53,31 @@ public class HistogramTableModel extends AbstractTableModel {
             case 1:
                 return states.get(rowIndex).getModule();
             case 2:
-                return states.get(rowIndex).getInitialSize();
+                return showType == INSTANCES
+                        ? states.get(rowIndex).getInitialInstances()
+                        : states.get(rowIndex).getInitialSize();
             default:
-                return states.size() == 0 || columnIndex == (states.get(rowIndex).getDifferences().length + 3)
-                        ? states.get(rowIndex).getFinalSize()
-                        : states.get(rowIndex).getDifferences()[columnIndex - 3];
+                return states.size() == 0 || columnIndex == (states.get(rowIndex).getDifferencesSizes().length + 3)
+                        ? (showType == INSTANCES ? states.get(rowIndex).getFinalInstances() : states.get(rowIndex).getFinalSize())
+                        : (showType == INSTANCES ? states.get(rowIndex).getDifferencesInstances()[columnIndex - 3] : states.get(rowIndex).getDifferencesSizes()[columnIndex - 3]);
         }
     }
 
     @Override
     public int getColumnCount() {
-        return 4 + (states.size() == 0 ? 0 : states.get(0).getDifferences().length);
+        return 4 + (states.size() == 0 ? 0 : states.get(0).getDifferencesSizes().length);
     }
 
     @Override
     public int getRowCount() {
         return states.size();
+    }
+
+    public void setShowType(SHOW_TYPE showType) {
+        if (this.showType != showType && showType != null) {
+            this.showType = showType;
+            fireTableDataChanged();
+        }
     }
 
     public void setStates(List<State> states) {

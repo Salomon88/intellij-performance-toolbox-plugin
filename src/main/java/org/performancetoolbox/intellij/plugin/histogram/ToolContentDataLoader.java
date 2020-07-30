@@ -13,16 +13,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Optional.ofNullable;
 import static javax.swing.SwingWorker.StateValue.DONE;
 import static javax.swing.SwingWorker.StateValue.STARTED;
+import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 
 public class ToolContentDataLoader implements ToolContentDataLoadable<List<State>> {
 
-    private List<VirtualFile> files;
-    private Map<String, State> states = new HashMap<>();
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+    private static final Pattern REGULAR_RECORD = Pattern.compile("\\d+:\\s+(\\d+)\\s+(\\d+)\\s+(\\S+)\\s*(\\((.*)\\))?$");
+    private static final Pattern TOTAL_RECORD = Pattern.compile("Total\\s+(\\d+)\\s+(\\d+)$");
+
+    private final List<VirtualFile> files;
+    private final Map<String, State> states = new HashMap<>();
+    private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     public ToolContentDataLoader(List<VirtualFile> files) {
         this.files = files;
@@ -49,48 +55,12 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<List<State
 
     @Override
     public void execute() {
-        for (int i = 0; i < files.size(); i++) {
-            try (Scanner scanner = new Scanner(new File(files.get(i).getPath()))) {
+        for (int index = 0; index < files.size(); index++) {
+            try (Scanner scanner = new Scanner(new File(files.get(index).getPath()))) {
                 while (scanner.hasNext()) {
-                    String line = scanner.nextLine().trim();
-
-                    if (line.contains(":")) {
-                        State state;
-                        String[] parts = line.replaceAll("\\s+", " ").split(" ");
-                        String module = parts.length > 4 ? parts[4] : null;
-                        String name = parts[3];
-                        String key = getKey(name, module);
-
-                        if (module != null) {
-                            module = module.replace("(", "").replace(")", "");
-                        }
-
-                        if (i == 0) {
-                            state = new State();
-                            state.setDifferences(new Long[files.size() - 1]);
-                            state.setInitialSize(Long.parseLong(parts[2]));
-                            state.setModule(module);
-                            state.setName(name);
-                            states.put(key, state);
-                        } else {
-                            state = states.get(key);
-
-                            if (state == null) {
-                                state = new State();
-                                state.setDifferences(new Long[files.size() - 1]);
-                                state.setModule(module);
-                                state.setName(name);
-                                state.getDifferences()[i - 1] = Long.parseLong(parts[2]);
-                                states.put(key, state);
-                            } else {
-                                state.getDifferences()[i - 1] = Long.parseLong(parts[2]) - ofNullable(i == 1 ? state.getInitialSize() : state.getDifferences()[i - 2]).orElse(0L);
-                            }
-                        }
-
-                        if (i == files.size() - 1) {
-                            state.setFinalSize(Long.parseLong(parts[2]));
-                        }
-                    }
+                    final String line = scanner.nextLine().trim();
+                    parseRegularRecord(line, index);
+                    parseTotalRecord(line, index);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -106,5 +76,68 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<List<State
 
     private String getKey(String className, String moduleName) {
         return className + ":" + moduleName;
+    }
+
+    private void parseRecord(String key, String module, String name, int index, long instances, long size) {
+        State state;
+
+        if (index == 0) {
+            state = new State();
+            state.setDifferencesInstances(new Long[files.size() - 1]);
+            state.setDifferencesSizes(new Long[files.size() - 1]);
+            state.setInitialInstances(instances);
+            state.setInitialSize(size);
+            state.setModule(module);
+            state.setName(name);
+            states.put(key, state);
+        } else {
+            state = states.get(key);
+
+            if (state == null) {
+                state = new State();
+                state.setDifferencesInstances(new Long[files.size() - 1]);
+                state.setDifferencesSizes(new Long[files.size() - 1]);
+                state.getDifferencesInstances()[index - 1] = instances;
+                state.getDifferencesSizes()[index - 1] = size;
+                state.setModule(module);
+                state.setName(name);
+                states.put(key, state);
+            } else {
+                state.getDifferencesInstances()[index - 1] = instances - ofNullable(index == 1 ? state.getInitialInstances() : state.getDifferencesInstances()[index - 2]).orElse(0L);
+                state.getDifferencesSizes()[index - 1] = size - ofNullable(index == 1 ? state.getInitialSize() : state.getDifferencesSizes()[index - 2]).orElse(0L);
+            }
+        }
+
+        if (index == files.size() - 1) {
+            state.setFinalInstances(instances);
+            state.setFinalSize(size);
+        }
+    }
+
+    private void parseRegularRecord(String line, int index) {
+        Matcher matcher = REGULAR_RECORD.matcher(line);
+
+        if (matcher.matches()) {
+            String module = matcher.groupCount() == 5 ? matcher.group(5) : null;
+            String name = matcher.group(3);
+            String key = getKey(name, module);
+            long instances = Long.parseLong(matcher.group(1));
+            long size = Long.parseLong(matcher.group(2));
+
+            parseRecord(key, module, name, index, instances, size);
+        }
+    }
+
+    private void parseTotalRecord(String line, int index) {
+        Matcher matcher = TOTAL_RECORD.matcher(line);
+
+        if (matcher.matches()) {
+            String name = getResourceBundle().getString("table.histogram.total.name");
+            String key = getKey(name, null);
+            long instances = Long.parseLong(matcher.group(1));
+            long size = Long.parseLong(matcher.group(2));
+
+            parseRecord(key, null, name, index, instances, size);
+        }
     }
 }

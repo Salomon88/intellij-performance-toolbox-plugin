@@ -22,6 +22,8 @@ import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 import static java.util.stream.Collectors.toList;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
+import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.SIZE;
 
 public class ToolContentHolder implements ToolContentHoldable {
 
@@ -57,6 +59,18 @@ public class ToolContentHolder implements ToolContentHoldable {
                     histogramTableModel.setStates(filteredStates);
                 } else {
                     histogramTableModel.setStates(states);
+                }
+            }
+        });
+        defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.showType.text"), resourceBundle.getString("action.histogram.showType.description"), PreviewDetails, false) {
+            @Override
+            public void setSelected(@NotNull AnActionEvent e, boolean state) {
+                super.setSelected(e, state);
+
+                if (state) {
+                    histogramTableModel.setShowType(INSTANCES);
+                } else {
+                    histogramTableModel.setShowType(SIZE);
                 }
             }
         });
