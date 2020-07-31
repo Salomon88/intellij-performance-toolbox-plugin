@@ -74,6 +74,16 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<List<State
     public void propertyChange(PropertyChangeEvent evt) {
     }
 
+    private Long getPriorSum(Long initial, Long[] differences, int index) {
+        long sum = ofNullable(initial).orElse(0L);
+
+        for (int i = 0; i < index - 1; i++) {
+            sum += ofNullable(differences[i]).orElse(0L);
+        }
+
+        return sum;
+    }
+
     private String getKey(String className, String moduleName) {
         return className + ":" + moduleName;
     }
@@ -103,8 +113,8 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<List<State
                 state.setName(name);
                 states.put(key, state);
             } else {
-                state.getDifferencesInstances()[index - 1] = instances - ofNullable(index == 1 ? state.getInitialInstances() : state.getDifferencesInstances()[index - 2]).orElse(0L);
-                state.getDifferencesSizes()[index - 1] = size - ofNullable(index == 1 ? state.getInitialSize() : state.getDifferencesSizes()[index - 2]).orElse(0L);
+                state.getDifferencesInstances()[index - 1] = instances - getPriorSum(state.getInitialInstances(), state.getDifferencesInstances(), index);
+                state.getDifferencesSizes()[index - 1] = size - getPriorSum(state.getInitialSize(), state.getDifferencesSizes(), index);
             }
         }
 
