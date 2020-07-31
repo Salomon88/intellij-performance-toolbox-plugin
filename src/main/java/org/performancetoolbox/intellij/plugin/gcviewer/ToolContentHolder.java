@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
 import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
+import org.performancetoolbox.intellij.plugin.gcviewer.actions.ViewAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +59,13 @@ public class ToolContentHolder implements ToolContentHoldable {
         this.component = initComponent();
         this.propertyChangeListener = initPropertyChangeListener();
         this.project = project;
-        getApplication().getComponent(PreferencesComponent.class).addPropertyChangeListener(propertyChangeListener);
+
+        gcDocument.getGCResources().forEach(res -> {
+            PreferencesComponent prefData = getApplication().
+                    getComponent(PreferencesComponent.class);
+            prefData.setGcDocPreference(res.getResourceName());
+            prefData.addGcDocListener(res.getResourceName(), propertyChangeListener);
+        });
     }
 
     public Icon getIcon() {
@@ -81,7 +89,9 @@ public class ToolContentHolder implements ToolContentHoldable {
      */
     @Override
     public void dispose() {
-        getApplication().getComponent(PreferencesComponent.class).removePropertyChangeListener(propertyChangeListener);
+        gcDocument.getGCResources().forEach(res -> {
+            getApplication().getComponent(PreferencesComponent.class).removeGcDocListener(res.getResourceName(), propertyChangeListener);
+        });
     }
 
     private JPanel initComponent() {
@@ -115,6 +125,13 @@ public class ToolContentHolder implements ToolContentHoldable {
         });
 
         defaultActionGroup.add(new ToggleZoomAction.ZoomActionGroup(this));
+
+        PreferencesComponent.PreferenceData preferencesData = ApplicationManager.
+                getApplication().
+                getComponent(PreferencesComponent.class).
+                getPreferenceData(gcDocument.getGCResources().get(0).getResourceName());
+
+        defaultActionGroup.add(new ViewAction.ViewActionGroup(preferencesData));
 
         final ActionToolbar actionBar = ActionManager.getInstance().createActionToolbar("gcview", defaultActionGroup, false);
         final JPanel jPanel = new JPanel();

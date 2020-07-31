@@ -1,4 +1,4 @@
-package org.memorytoolbox.intellij.plugin.common.settings;
+package org.performancetoolbox.intellij.plugin.settings;
 
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -7,10 +7,10 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
-import org.memorytoolbox.intellij.plugin.gcviewer.PreferencesComponent;
+import org.performancetoolbox.intellij.plugin.gcviewer.PreferencesComponent;
 
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
-import static org.memorytoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -30,7 +30,7 @@ public class GCViewerApplicationSettings implements Configurable {
 
     @Override
     public @Nls(capitalization = Nls.Capitalization.Title) String getDisplayName() {
-        return getResourceBundle().getString("action.settings.window.name");
+        return getResourceBundle().getString("action.gc.settings.window");
     }
 
     @Override
@@ -39,34 +39,34 @@ public class GCViewerApplicationSettings implements Configurable {
         settingsPanel.setLayout(new VerticalLayout());
         settingsPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        menuItemIncGCLines = new JCheckBox(LocalisationHelper.getString("main_frame_menuitem_inc_gc_lines"),prefs.isIncGcLines());
-        menuItemIncGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_inc_gc_lines").charAt(0));
-        menuItemIncGCLines.setActionCommand(GCPreferences.INC_GC_LINES);
+//        menuItemIncGCLines = new JCheckBox(LocalisationHelper.getString("main_frame_menuitem_inc_gc_lines"),prefs.isIncGcLines());
+//        menuItemIncGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_inc_gc_lines").charAt(0));
+//        menuItemIncGCLines.setActionCommand(GCPreferences.INC_GC_LINES);
 //        menuItemIncGCLines.setBackground(Color.BLACK);
-        settingsPanel.add(GCPreferences.INC_GC_LINES, menuItemIncGCLines);
+//        settingsPanel.add(GCPreferences.INC_GC_LINES, menuItemIncGCLines);
 
-        menuItemGcTimesLine = new JCheckBox(LocalisationHelper.getString("main_frame_menuitem_gc_times_line"),prefs.isGcTimesLine());
-        menuItemGcTimesLine.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_line").charAt(0));
-        menuItemGcTimesLine.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_line"));
+//        menuItemGcTimesLine = new JCheckBox(LocalisationHelper.getString("main_frame_menuitem_gc_times_line"),prefs.isGcTimesLine());
+//        menuItemGcTimesLine.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_line").charAt(0));
+//        menuItemGcTimesLine.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_line"));
         //        menuItemGcTimesLine.setBackground(Color.CYAN);
-        settingsPanel.add(GCPreferences.GC_TIMES_LINE, menuItemGcTimesLine);
+//        settingsPanel.add(GCPreferences.GC_TIMES_LINE, menuItemGcTimesLine);
 
         return settingsPanel;
     }
 
     @Override
     public boolean isModified() {
-        return
-                menuItemIncGCLines.isSelected() != prefs.isIncGcLines() ||
-                        menuItemGcTimesLine.isSelected() != prefs.isGcTimesLine();
-
+//        return
+//                menuItemIncGCLines.isSelected() != prefs.isIncGcLines() ||
+//                        menuItemGcTimesLine.isSelected() != prefs.isGcTimesLine();
+        return true;
     }
 
     @Override
     public void apply() throws ConfigurationException {
-        prefs.setIncGcLines(menuItemIncGCLines.isSelected());
-        prefs.setGcTimesLine(menuItemGcTimesLine.isSelected());
-//        prefs = getApplication().getComponent(PreferencesComponent.class);
+//        prefs.setIncGcLines(menuItemIncGCLines.isSelected());
+//        prefs.setGcTimesLine(menuItemGcTimesLine.isSelected());
+//        org.performancetoolbox.intellij.plugin.prefs = getApplication().getComponent(PreferencesComponent.class);
     }
 
     @Override
