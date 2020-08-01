@@ -92,25 +92,25 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<List<State
         State state;
 
         if (index == 0) {
-            state = new State();
-            state.setDifferencesInstances(new Long[files.size() - 1]);
-            state.setDifferencesSizes(new Long[files.size() - 1]);
-            state.setInitialInstances(instances);
-            state.setInitialSize(size);
-            state.setModule(module);
-            state.setName(name);
+            state = new State()
+                    .setDifferencesInstances(new Long[files.size() - 1])
+                    .setDifferencesSizes(new Long[files.size() - 1])
+                    .setInitialInstances(instances)
+                    .setInitialSize(size)
+                    .setModule(module)
+                    .setName(name);
             states.put(key, state);
         } else {
             state = states.get(key);
 
             if (state == null) {
-                state = new State();
-                state.setDifferencesInstances(new Long[files.size() - 1]);
-                state.setDifferencesSizes(new Long[files.size() - 1]);
+                state = new State()
+                        .setDifferencesInstances(new Long[files.size() - 1])
+                        .setDifferencesSizes(new Long[files.size() - 1])
+                        .setModule(module)
+                        .setName(name);
                 state.getDifferencesInstances()[index - 1] = instances;
                 state.getDifferencesSizes()[index - 1] = size;
-                state.setModule(module);
-                state.setName(name);
                 states.put(key, state);
             } else {
                 state.getDifferencesInstances()[index - 1] = instances - getPriorSum(state.getInitialInstances(), state.getDifferencesInstances(), index);
@@ -119,8 +119,9 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<List<State
         }
 
         if (index == files.size() - 1) {
-            state.setFinalInstances(instances);
-            state.setFinalSize(size);
+            state
+                    .setFinalInstances(instances)
+                    .setFinalSize(size);
         }
     }
 
