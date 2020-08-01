@@ -3,8 +3,8 @@ package org.performancetoolbox.intellij.plugin.histogram;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.SIZE;
@@ -37,7 +37,7 @@ public class HistogramTableModel extends AbstractTableModel {
             case 2:
                 return getResourceBundle().getString("table.histogram.initial.header");
             default:
-                return filteredStates.size() == 0 || columnIndex == (filteredStates.get(0).getDifferencesSizes().length + 3)
+                return noDifferences() || columnIndex == (filteredStates.get(0).getDifferencesSizes().length + 3)
                         ? getResourceBundle().getString("table.histogram.final.header")
                         : getResourceBundle().getString("table.histogram.diff.header") + " #" + (columnIndex - 2);
         }
@@ -66,7 +66,7 @@ public class HistogramTableModel extends AbstractTableModel {
                         ? filteredStates.get(rowIndex).getInitialInstances()
                         : filteredStates.get(rowIndex).getInitialSize();
             default:
-                return states.size() == 0 || columnIndex == (filteredStates.get(rowIndex).getDifferencesSizes().length + 3)
+                return noDifferences() || columnIndex == (filteredStates.get(rowIndex).getDifferencesSizes().length + 3)
                         ? (showType == INSTANCES ? filteredStates.get(rowIndex).getFinalInstances() : filteredStates.get(rowIndex).getFinalSize())
                         : (showType == INSTANCES ? filteredStates.get(rowIndex).getDifferencesInstances()[columnIndex - 3] : filteredStates.get(rowIndex).getDifferencesSizes()[columnIndex - 3]);
         }
@@ -74,7 +74,7 @@ public class HistogramTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 4 + (filteredStates.size() == 0 ? 0 : filteredStates.get(0).getDifferencesSizes().length);
+        return 4 + (noDifferences() ? 0 : filteredStates.get(0).getDifferencesSizes().length);
     }
 
     @Override
@@ -112,12 +112,18 @@ public class HistogramTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    private boolean noDifferences() {
+        return filteredStates.size() == 0
+                || filteredStates.get(0).getDifferencesSizes() == null
+                || filteredStates.get(0).getDifferencesSizes().length == 0;
+    }
+
     private void filterStates() {
         filteredStates = states.stream()
                 .filter(state -> showTotal || !getResourceBundle().getString("table.histogram.total.name").equals(state.getName()))
-                .filter(state -> showUnchanged || showType == INSTANCES
+                .filter(state -> showUnchanged || (showType == INSTANCES
                         ? !Objects.equals(state.getInitialInstances(), state.getFinalInstances())
-                        : !Objects.equals(state.getInitialSize(), state.getFinalSize()))
-                .collect(Collectors.toList());
+                        : !Objects.equals(state.getInitialSize(), state.getFinalSize())))
+                .collect(toList());
     }
 }

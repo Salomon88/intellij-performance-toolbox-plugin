@@ -42,35 +42,43 @@ public class State {
         return name;
     }
 
-    public void setDifferencesInstances(Long[] differencesInstances) {
+    public State setDifferencesInstances(Long[] differencesInstances) {
         this.differencesInstances = differencesInstances;
+        return this;
     }
 
-    public void setDifferencesSizes(Long[] differencesSizes) {
+    public State setDifferencesSizes(Long[] differencesSizes) {
         this.differencesSizes = differencesSizes;
+        return this;
     }
 
-    public void setInitialInstances(Long initialInstances) {
+    public State setInitialInstances(Long initialInstances) {
         this.initialInstances = initialInstances;
+        return this;
     }
 
-    public void setInitialSize(Long initialSize) {
+    public State setInitialSize(Long initialSize) {
         this.initialSize = initialSize;
+        return this;
     }
 
-    public void setFinalInstances(Long finalInstances) {
+    public State setFinalInstances(Long finalInstances) {
         this.finalInstances = finalInstances;
+        return this;
     }
 
-    public void setFinalSize(Long finalSize) {
+    public State setFinalSize(Long finalSize) {
         this.finalSize = finalSize;
+        return this;
     }
 
-    public void setModule(String module) {
+    public State setModule(String module) {
         this.module = module;
+        return this;
     }
 
-    public void setName(String name) {
+    public State setName(String name) {
         this.name = name;
+        return this;
     }
 }
