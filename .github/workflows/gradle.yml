@@ -23,4 +23,4 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Run tests and build plugin
-      run: ./gradlew test buildPlugin
+      run: ./gradlew test buildPlugin --build-cache
