@@ -35,7 +35,6 @@ public abstract class POIExporter implements Exporter {
 
             for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
                 Cell cell = row.createCell(columnIndex);
-
                 ofNullable(table.getColumnName(columnIndex)).ifPresent(name -> cell.setCellValue(createHelper.createRichTextString(name)));
             }
 
@@ -45,7 +44,6 @@ public abstract class POIExporter implements Exporter {
 
                 for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
                     Cell cell = row.createCell(columnIndex);
-
                     ofNullable(table.getModel().getValueAt(rawRowIndex, columnIndex)).ifPresent(value -> {
                         if (value instanceof String) {
                             cell.setCellValue((String) value);

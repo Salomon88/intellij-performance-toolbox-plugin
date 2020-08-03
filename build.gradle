@@ -1,5 +1,6 @@
 buildscript {
     ext {
+        junitVersion = '5.6.2'
         // as Idea bundles with org.apache.xmlbeans:xmlbeans:2.6.0, but poi-ooxml 4.1.2 requires 3.1.0, so downgrading
         poiVersion = '3.17'
     }
@@ -31,7 +32,8 @@ dependencies {
     implementation group: 'com.github.chewiebug', name: 'gcviewer', version: '1.36'
     implementation group: 'org.apache.poi', name: 'poi', version: "$poiVersion"
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: "$poiVersion"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitVersion"
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitVersion"
 }
 
 intellij {
@@ -40,4 +42,8 @@ intellij {
 
 patchPluginXml {
     untilBuild = '202.*'
+}
+
+test {
+    useJUnitPlatform()
 }
