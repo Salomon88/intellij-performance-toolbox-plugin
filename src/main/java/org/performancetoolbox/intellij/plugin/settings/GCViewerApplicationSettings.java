@@ -20,63 +20,27 @@ import java.awt.Color;
 
 public class GCViewerApplicationSettings implements Configurable {
 
-    private PreferencesComponent prefs;
-    private JCheckBox menuItemIncGCLines;
-    private JCheckBox menuItemGcTimesLine;
-
-    public GCViewerApplicationSettings() {
-        prefs = getApplication().getComponent(PreferencesComponent.class);
-    }
-
     @Override
     public @Nls(capitalization = Nls.Capitalization.Title) String getDisplayName() {
-        return getResourceBundle().getString("action.gc.settings.window");
+        return "settings";
     }
 
     @Override
     public @Nullable JComponent createComponent() {
         JPanel settingsPanel = new JPanel();
-        settingsPanel.setLayout(new VerticalLayout());
-        settingsPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-//        menuItemIncGCLines = new JCheckBox(LocalisationHelper.getString("main_frame_menuitem_inc_gc_lines"),prefs.isIncGcLines());
-//        menuItemIncGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_inc_gc_lines").charAt(0));
-//        menuItemIncGCLines.setActionCommand(GCPreferences.INC_GC_LINES);
-//        menuItemIncGCLines.setBackground(Color.BLACK);
-//        settingsPanel.add(GCPreferences.INC_GC_LINES, menuItemIncGCLines);
-
-//        menuItemGcTimesLine = new JCheckBox(LocalisationHelper.getString("main_frame_menuitem_gc_times_line"),prefs.isGcTimesLine());
-//        menuItemGcTimesLine.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_line").charAt(0));
-//        menuItemGcTimesLine.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_line"));
-        //        menuItemGcTimesLine.setBackground(Color.CYAN);
-//        settingsPanel.add(GCPreferences.GC_TIMES_LINE, menuItemGcTimesLine);
-
         return settingsPanel;
     }
 
     @Override
     public boolean isModified() {
-//        return
-//                menuItemIncGCLines.isSelected() != prefs.isIncGcLines() ||
-//                        menuItemGcTimesLine.isSelected() != prefs.isGcTimesLine();
         return true;
     }
 
     @Override
     public void apply() throws ConfigurationException {
-//        prefs.setIncGcLines(menuItemIncGCLines.isSelected());
-//        prefs.setGcTimesLine(menuItemGcTimesLine.isSelected());
-//        org.performancetoolbox.intellij.plugin.prefs = getApplication().getComponent(PreferencesComponent.class);
     }
 
     @Override
     public void disposeUIResources() {
-        if (isModified()) {
-            try {
-                apply();
-            } catch (ConfigurationException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

@@ -11,8 +11,10 @@ import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
+import org.performancetoolbox.intellij.plugin.gcviewer.PreferencesComponent;
 
 import java.beans.PropertyChangeListener;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 

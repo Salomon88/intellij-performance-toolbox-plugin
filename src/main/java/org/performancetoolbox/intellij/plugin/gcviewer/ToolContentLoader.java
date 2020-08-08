@@ -34,7 +34,7 @@ public class ToolContentLoader implements ToolContentLoadable<GCResource>, Prope
         ToolContentDataLoaderGroupTracker tracker = new ToolContentDataLoaderGroupTrackerImpl(getNormalizedName(gcResource));
         GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
 
-        PreferencesComponent.PreferenceData preferencesData = ApplicationManager.
+        PreferenceData preferencesData = ApplicationManager.
                 getApplication().
                 getComponent(PreferencesComponent.class).
                 getPreferenceData(gcResource.getResourceName());
