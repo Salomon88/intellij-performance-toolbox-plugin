@@ -4,9 +4,12 @@ import com.tagtraum.perf.gcviewer.view.model.GCPreferences;
 
 public class PreferencesWrapper extends GCPreferences {
 
+    /*
+    This prefix related on inner logic of GC plugin, located in com.tagtraum.perf.gcviewer.view.model.GCPreferences
+     */
     private static final String GC_LINE_PREFIX = "view.";
 
-    public PreferencesWrapper(PreferencesComponent.PreferenceData preferenceData) {
+    public PreferencesWrapper(PreferenceData preferenceData) {
         setBooleanProperty(GC_LINE_PREFIX + ANTI_ALIAS, preferenceData.isAntiAlias());
         setBooleanProperty(GC_LINE_PREFIX + CONCURRENT_COLLECTION_BEGIN_END, preferenceData.isConcurrentCollectionBeginEnd());
         setBooleanProperty(GC_LINE_PREFIX + FULL_GC_LINES, preferenceData.isFullGcLines());

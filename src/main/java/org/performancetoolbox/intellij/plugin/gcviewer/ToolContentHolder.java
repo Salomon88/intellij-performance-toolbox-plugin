@@ -52,19 +52,16 @@ public class ToolContentHolder implements ToolContentHoldable {
     private final Project project;
     private GCDocument gcDocument;
     private JComponent component;
-    private PropertyChangeListener propertyChangeListener;
 
     public ToolContentHolder(GCDocument gcDocument, Project project) {
         this.gcDocument = gcDocument;
         this.component = initComponent();
-        this.propertyChangeListener = initPropertyChangeListener();
         this.project = project;
 
         gcDocument.getGCResources().forEach(res -> {
             PreferencesComponent prefData = getApplication().
                     getComponent(PreferencesComponent.class);
-            prefData.setGcDocPreference(res.getResourceName());
-            prefData.addGcDocListener(res.getResourceName(), propertyChangeListener);
+            prefData.setGcDocPreference(res.getResourceName(), initPropertyChangeListener());
         });
     }
 
@@ -89,9 +86,8 @@ public class ToolContentHolder implements ToolContentHoldable {
      */
     @Override
     public void dispose() {
-        gcDocument.getGCResources().forEach(res -> {
-            getApplication().getComponent(PreferencesComponent.class).removeGcDocListener(res.getResourceName(), propertyChangeListener);
-        });
+        gcDocument.getGCResources().forEach(res ->
+                getApplication().getComponent(PreferencesComponent.class).removeGcDocListener(res.getResourceName()));
     }
 
     private JPanel initComponent() {
@@ -126,7 +122,8 @@ public class ToolContentHolder implements ToolContentHoldable {
 
         defaultActionGroup.add(new ToggleZoomAction.ZoomActionGroup(this));
 
-        PreferencesComponent.PreferenceData preferencesData = ApplicationManager.
+        //TODO Not sure is it a good idea to hard code this gcDocument.getGCResources().get(0)
+        PreferenceData preferencesData = ApplicationManager.
                 getApplication().
                 getComponent(PreferencesComponent.class).
                 getPreferenceData(gcDocument.getGCResources().get(0).getResourceName());
