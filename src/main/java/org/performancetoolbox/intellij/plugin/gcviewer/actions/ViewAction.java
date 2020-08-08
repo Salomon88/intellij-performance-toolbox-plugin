@@ -9,22 +9,33 @@ import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.performancetoolbox.intellij.plugin.gcviewer.PreferencesComponent;
+import org.performancetoolbox.intellij.plugin.gcviewer.PreferenceData;
 
 import static com.tagtraum.perf.gcviewer.util.LocalisationHelper.getString;
 
 import javax.swing.*;
 
 public abstract class ViewAction extends ToggleAction {
+    private final Icon icon;
     private boolean state;
 
     public ViewAction(@Nullable @Nls(capitalization = Nls.Capitalization.Title) String text,
-                      @Nullable @Nls(capitalization = Nls.Capitalization.Sentence) String description,
                       @Nullable Icon icon,
+                      boolean state
+    ) {
+
+        this(text, icon, null, state);
+    }
+
+    public ViewAction(@Nullable @Nls(capitalization = Nls.Capitalization.Title) String text,
+                      @Nullable Icon icon,
+                      @Nullable String description,
                       boolean state
     ) {
         super(text, description, icon);
         this.state = state;
+        getTemplatePresentation().setIcon(icon);
+        this.icon = icon;
     }
 
     @Override
@@ -42,12 +53,11 @@ public abstract class ViewAction extends ToggleAction {
 
     public static class ViewActionGroup extends DefaultActionGroup {
 
-        public ViewActionGroup(PreferencesComponent.PreferenceData preferenceData) {
+        public ViewActionGroup(PreferenceData preferenceData) {
             super("Preference", true);
             getTemplatePresentation().setIcon(AllIcons.Gutter.Colors);
 
             add(new ViewAction(getString("main_frame_menuitem_full_gc_lines"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(FullGCLineRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isFullGcLines()
             ) {
@@ -59,7 +69,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_inc_gc_lines"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(IncLineRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isIncGcLines()
             ) {
@@ -70,7 +79,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_gc_times_line"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(IncLineRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isGcTimesLine()
             ) {
@@ -81,7 +89,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_gc_times_rectangles"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(GCRectanglesRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isGcTimesRectangles()
             ) {
@@ -92,7 +99,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_total_memory"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(TotalHeapRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isTotalMemory()
             ) {
@@ -103,7 +109,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_tenured_memory"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(TotalTenuredRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isTenuredMemory()
             ) {
@@ -114,7 +119,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_used_memory"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(UsedHeapRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isUsedMemory()
             ) {
@@ -125,7 +129,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_used_tenured_memory"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(UsedTenuredRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isUsedTenuredMemory()
             ) {
@@ -136,7 +139,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_used_young_memory"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(UsedYoungRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isUsedYoungMemory()
             ) {
@@ -147,7 +149,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_initial_mark_level"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(InitialMarkLevelRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isInitialMarkLevel()
             ) {
@@ -158,7 +159,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_concurrent_collection_begin_end"),
-                    "",
                     ImageHelper.createMonoColoredImageIcon(ConcurrentGcBegionEndRenderer.CONCURRENT_COLLECTION_BEGIN, 20, 20),
                     preferenceData.isConcurrentCollectionBeginEnd()
             ) {
@@ -169,7 +169,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_antialias"),
-                    "",
                     ImageHelper.createEmptyImageIcon(20, 20),
                     preferenceData.isAntiAlias()
             ) {
@@ -180,7 +179,6 @@ public abstract class ViewAction extends ToggleAction {
             });
 
             add(new ViewAction(getString("main_frame_menuitem_show_date_stamp"),
-                    "",
                     ImageHelper.createEmptyImageIcon(20, 20),
                     preferenceData.isShowDatestamp()
             ) {
@@ -189,7 +187,6 @@ public abstract class ViewAction extends ToggleAction {
                     preferenceData.setShowDatestamp(is);
                 }
             });
-
         }
     }
 }
