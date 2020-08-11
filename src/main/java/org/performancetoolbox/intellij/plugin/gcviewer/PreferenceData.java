@@ -4,7 +4,6 @@ import com.intellij.util.xmlb.annotations.Tag;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.time.Instant;
 
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.*;
 import static java.util.Objects.nonNull;
