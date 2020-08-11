@@ -10,6 +10,7 @@ import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
@@ -58,11 +59,10 @@ public class ToolContentHolder implements ToolContentHoldable {
         this.component = initComponent();
         this.project = project;
 
-        gcDocument.getGCResources().forEach(res -> {
-            PreferencesComponent prefData = getApplication().
-                    getComponent(PreferencesComponent.class);
-            prefData.setGcDocPreference(res.getResourceName(), initPropertyChangeListener());
-        });
+        PreferencesComponent prefData = getApplication().
+                getComponent(PreferencesComponent.class);
+        GCResource gcResource = gcDocument.getGCResources().get(0);
+        prefData.setGcDocPreference(gcResource.getResourceName(), initPropertyChangeListener());
     }
 
     public Icon getIcon() {
@@ -86,8 +86,9 @@ public class ToolContentHolder implements ToolContentHoldable {
      */
     @Override
     public void dispose() {
-        gcDocument.getGCResources().forEach(res ->
-                getApplication().getComponent(PreferencesComponent.class).removeGcDocListener(res.getResourceName()));
+        getApplication().
+                getComponent(PreferencesComponent.class).
+                removeGcDocListener(gcDocument.getGCResources().get(0).getResourceName());
     }
 
     private JPanel initComponent() {
@@ -96,7 +97,7 @@ public class ToolContentHolder implements ToolContentHoldable {
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.settings.text"), resourceBundle.getString("action.gc.settings.description"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, getResourceBundle().getString("action.settings.window.name"));
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, (String) null);
             }
         });
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.export.text"), resourceBundle.getString("action.gc.export.description"), Menu_saveall) {
@@ -122,7 +123,6 @@ public class ToolContentHolder implements ToolContentHoldable {
 
         defaultActionGroup.add(new ToggleZoomAction.ZoomActionGroup(this));
 
-        //TODO Not sure is it a good idea to hard code this gcDocument.getGCResources().get(0)
         PreferenceData preferencesData = ApplicationManager.
                 getApplication().
                 getComponent(PreferencesComponent.class).

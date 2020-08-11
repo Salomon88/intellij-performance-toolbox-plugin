@@ -1,6 +1,5 @@
 package org.performancetoolbox.intellij.plugin.gcviewer.actions;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.ToggleAction;
@@ -11,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.performancetoolbox.intellij.plugin.gcviewer.PreferenceData;
 
+import javax.swing.Icon;
+
+import static com.intellij.icons.AllIcons.General.Filter;
 import static com.tagtraum.perf.gcviewer.util.LocalisationHelper.getString;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
-
-import javax.swing.*;
-import java.util.ResourceBundle;
 
 public abstract class ViewAction extends ToggleAction {
 
@@ -50,13 +49,13 @@ public abstract class ViewAction extends ToggleAction {
         notifyGui(state);
     }
 
-    abstract public void notifyGui(boolean is);
+    abstract void notifyGui(boolean is);
 
     public static class ViewActionGroup extends DefaultActionGroup {
 
         public ViewActionGroup(PreferenceData preferenceData) {
-            super(getResourceBundle().getString("action.gc.document.view.provisioning"), true);
-            getTemplatePresentation().setIcon(AllIcons.Gutter.Colors);
+            super(getResourceBundle().getString("action.gc.document.view.filter"), true);
+            getTemplatePresentation().setIcon(Filter);
 
             add(new ViewAction(getString("main_frame_menuitem_full_gc_lines"),
                     ImageHelper.createMonoColoredImageIcon(FullGCLineRenderer.DEFAULT_LINEPAINT, 20, 20),
