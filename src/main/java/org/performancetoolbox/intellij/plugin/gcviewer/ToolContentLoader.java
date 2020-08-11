@@ -33,14 +33,19 @@ public class ToolContentLoader implements ToolContentLoadable<GCResource>, Prope
     public void load(GCResource gcResource, BiConsumer<Project, ToolContentHoldable> callback) {
         ToolContentDataLoaderGroupTracker tracker = new ToolContentDataLoaderGroupTrackerImpl(getNormalizedName(gcResource));
         GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
-        PreferencesComponent preferencesComponent = ApplicationManager.getApplication().getComponent(PreferencesComponent.class);
-        GCDocument gcDocument = new GCDocument(new Preferences(preferencesComponent), gcResource.getResourceName());
+
+        PreferenceData preferencesData = ApplicationManager.
+                getApplication().
+                getComponent(PreferencesComponent.class).
+                getPreferenceData(gcResource.getResourceName());
+
+        GCDocument gcDocument = new GCDocument(new PreferencesWrapper(preferencesData), gcResource.getResourceName());
         gcDocument.addPropertyChangeListener(this);
         GCDocumentController docController = new GCDocumentController(gcDocument);
         docController.addGCResource(gcModelLoader, new ViewMenuController(new MockedGCViewerGui()));
         tracker.addModelLoader(new ToolContentDataLoader(gcModelLoader));
 
-        doInBackground(project, tracker, () -> callback.accept(project, new ToolContentHolder(gcDocument)));
+        doInBackground(project, tracker, () -> callback.accept(project, new ToolContentHolder(gcDocument, project)));
     }
 
     @Override

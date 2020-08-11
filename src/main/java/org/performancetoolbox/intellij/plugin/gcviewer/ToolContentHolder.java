@@ -5,15 +5,19 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.ShowSettingsUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
+import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
 import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
+import org.performancetoolbox.intellij.plugin.gcviewer.actions.ViewAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,15 +50,19 @@ import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBund
 
 public class ToolContentHolder implements ToolContentHoldable {
 
+    private final Project project;
     private GCDocument gcDocument;
     private JComponent component;
-    private PropertyChangeListener propertyChangeListener;
 
-    public ToolContentHolder(GCDocument gcDocument) {
+    public ToolContentHolder(GCDocument gcDocument, Project project) {
         this.gcDocument = gcDocument;
         this.component = initComponent();
-        this.propertyChangeListener = initPropertyChangeListener();
-        getApplication().getComponent(PreferencesComponent.class).addPropertyChangeListener(propertyChangeListener);
+        this.project = project;
+
+        PreferencesComponent prefData = getApplication().
+                getComponent(PreferencesComponent.class);
+        GCResource gcResource = gcDocument.getGCResources().get(0);
+        prefData.setGcDocPreference(gcResource.getResourceName(), initPropertyChangeListener());
     }
 
     public Icon getIcon() {
@@ -78,7 +86,9 @@ public class ToolContentHolder implements ToolContentHoldable {
      */
     @Override
     public void dispose() {
-        getApplication().getComponent(PreferencesComponent.class).removePropertyChangeListener(propertyChangeListener);
+        getApplication().
+                getComponent(PreferencesComponent.class).
+                removeGcDocListener(gcDocument.getGCResources().get(0).getResourceName());
     }
 
     private JPanel initComponent() {
@@ -87,7 +97,7 @@ public class ToolContentHolder implements ToolContentHoldable {
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.settings.text"), resourceBundle.getString("action.gc.settings.description"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(null, (String) null);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, (String) null);
             }
         });
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.export.text"), resourceBundle.getString("action.gc.export.description"), Menu_saveall) {
@@ -112,6 +122,13 @@ public class ToolContentHolder implements ToolContentHoldable {
         });
 
         defaultActionGroup.add(new ToggleZoomAction.ZoomActionGroup(this));
+
+        PreferenceData preferencesData = ApplicationManager.
+                getApplication().
+                getComponent(PreferencesComponent.class).
+                getPreferenceData(gcDocument.getGCResources().get(0).getResourceName());
+
+        defaultActionGroup.add(new ViewAction.ViewActionGroup(preferencesData));
 
         final ActionToolbar actionBar = ActionManager.getInstance().createActionToolbar("gcview", defaultActionGroup, false);
         final JPanel jPanel = new JPanel();
