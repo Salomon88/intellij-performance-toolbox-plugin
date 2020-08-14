@@ -94,12 +94,14 @@ public class ToolContentHolder implements ToolContentHoldable {
     private JPanel initComponent() {
         final ResourceBundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
+/*
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.settings.text"), resourceBundle.getString("action.gc.settings.description"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ShowSettingsUtil.getInstance().showSettingsDialog(project, (String) null);
             }
         });
+*/
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.export.text"), resourceBundle.getString("action.gc.export.description"), Menu_saveall) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
