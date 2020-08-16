@@ -2,6 +2,7 @@ package org.performancetoolbox.intellij.plugin.histogram;
 
 import com.intellij.openapi.vfs.VirtualFile;
 import org.performancetoolbox.intellij.plugin.common.ToolContentDataLoadable;
+import org.performancetoolbox.intellij.plugin.histogram.State.ClassState;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,13 +22,13 @@ import static javax.swing.SwingWorker.StateValue.DONE;
 import static javax.swing.SwingWorker.StateValue.STARTED;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 
-public class ToolContentDataLoader implements ToolContentDataLoadable<List<State>> {
+public class ToolContentDataLoader implements ToolContentDataLoadable<State> {
 
     private static final Pattern REGULAR_RECORD = Pattern.compile("\\d+:\\s+(\\d+)\\s+(\\d+)\\s+(\\S+)\\s*(\\((.*)\\))?$");
     private static final Pattern TOTAL_RECORD = Pattern.compile("Total\\s+(\\d+)\\s+(\\d+)$");
 
     private final List<VirtualFile> files;
-    private final Map<String, State> states = new HashMap<>();
+    private final Map<String, ClassState> states = new HashMap<>();
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     public ToolContentDataLoader(List<VirtualFile> files) {
@@ -35,8 +36,8 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<List<State
     }
 
     @Override
-    public List<State> getContentData() {
-        return new ArrayList<>(states.values());
+    public State getContentData() {
+        return new State(files, new ArrayList<>(states.values()));
     }
 
     @Override
@@ -89,37 +90,37 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<List<State
     }
 
     private void parseRecord(String key, String module, String name, int index, long instances, long size) {
-        State state;
+        ClassState classState;
 
         if (index == 0) {
-            state = new State()
+            classState = new ClassState()
                     .setDifferencesInstances(new Long[files.size() - 1])
                     .setDifferencesSizes(new Long[files.size() - 1])
                     .setInitialInstances(instances)
                     .setInitialSize(size)
                     .setModule(module)
                     .setName(name);
-            states.put(key, state);
+            states.put(key, classState);
         } else {
-            state = states.get(key);
+            classState = states.get(key);
 
-            if (state == null) {
-                state = new State()
+            if (classState == null) {
+                classState = new ClassState()
                         .setDifferencesInstances(new Long[files.size() - 1])
                         .setDifferencesSizes(new Long[files.size() - 1])
                         .setModule(module)
                         .setName(name);
-                state.getDifferencesInstances()[index - 1] = instances;
-                state.getDifferencesSizes()[index - 1] = size;
-                states.put(key, state);
+                classState.getDifferencesInstances()[index - 1] = instances;
+                classState.getDifferencesSizes()[index - 1] = size;
+                states.put(key, classState);
             } else {
-                state.getDifferencesInstances()[index - 1] = instances - getPriorSum(state.getInitialInstances(), state.getDifferencesInstances(), index);
-                state.getDifferencesSizes()[index - 1] = size - getPriorSum(state.getInitialSize(), state.getDifferencesSizes(), index);
+                classState.getDifferencesInstances()[index - 1] = instances - getPriorSum(classState.getInitialInstances(), classState.getDifferencesInstances(), index);
+                classState.getDifferencesSizes()[index - 1] = size - getPriorSum(classState.getInitialSize(), classState.getDifferencesSizes(), index);
             }
         }
 
         if (index == files.size() - 1) {
-            state
+            classState
                     .setFinalInstances(instances)
                     .setFinalSize(size);
         }

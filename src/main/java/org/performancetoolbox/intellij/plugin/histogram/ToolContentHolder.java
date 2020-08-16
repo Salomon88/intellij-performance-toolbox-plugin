@@ -19,9 +19,10 @@ import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
 import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
@@ -37,12 +38,12 @@ import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableMod
 
 public class ToolContentHolder implements ToolContentHoldable {
 
-    private final List<State> states;
+    private final State state;
     private final String displayName;
 
-    public ToolContentHolder(List<State> states, String displayName) {
+    public ToolContentHolder(State state, String displayName) {
         this.displayName = displayName;
-        this.states = states;
+        this.state = state;
     }
 
     @Override
@@ -52,9 +53,21 @@ public class ToolContentHolder implements ToolContentHoldable {
 
     @Override
     public JComponent getComponent() {
-        final HistogramTableModel histogramTableModel = new HistogramTableModel(states);
+        final HistogramTableModel histogramTableModel = new HistogramTableModel(state);
         // create sortable table and sort by the last column in a descending order
-        final JBTable table = new JBTable(histogramTableModel);
+        final JBTable table = new JBTable(histogramTableModel) {
+            @Override
+            protected @NotNull JTableHeader createDefaultTableHeader() {
+                return new JBTableHeader() {
+                    @Override
+                    public String getToolTipText(@NotNull MouseEvent e) {
+                        final int i = columnAtPoint(e.getPoint());
+                        final int infoIndex = i >= 0 ? convertColumnIndexToModel(i) : -1;
+                        return histogramTableModel.getColumnToolTip(infoIndex);
+                    }
+                };
+            }
+        };
         table.setAutoCreateRowSorter(true);
         table.getRowSorter().toggleSortOrder(histogramTableModel.getColumnCount() - 1);
         table.getRowSorter().toggleSortOrder(histogramTableModel.getColumnCount() - 1);

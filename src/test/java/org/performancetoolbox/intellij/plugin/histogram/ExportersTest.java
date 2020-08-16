@@ -5,6 +5,7 @@ import com.intellij.ui.table.JBTable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE;
+import org.performancetoolbox.intellij.plugin.histogram.State.ClassState;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,8 +83,8 @@ public class ExportersTest {
     }
 
     private File export(String fileName, SHOW_TYPE showType, boolean diff, boolean sortDesc) throws IOException {
-        final List<State> states = asList(
-                new State()
+        final List<ClassState> classStates = asList(
+                new ClassState()
                         .setDifferencesInstances(diff ? new Long[]{1L} : null)
                         .setDifferencesSizes(diff ? new Long[]{10L} : null)
                         .setFinalInstances(diff ? 2L : 1L)
@@ -91,7 +92,7 @@ public class ExportersTest {
                         .setInitialInstances(1L)
                         .setInitialSize(10L)
                         .setName("Total"),
-                new State()
+                new ClassState()
                         .setDifferencesInstances(diff ? new Long[]{9L} : null)
                         .setDifferencesSizes(diff ? new Long[]{9L} : null)
                         .setFinalInstances(diff ? 10L : 2L)
@@ -99,7 +100,7 @@ public class ExportersTest {
                         .setInitialInstances(2L)
                         .setInitialSize(1L)
                         .setName("[I"));
-        final HistogramTableModel histogramTableModel = new HistogramTableModel(states);
+        final HistogramTableModel histogramTableModel = new HistogramTableModel(new State(null, classStates));
         histogramTableModel.setShowType(showType);
         final JBTable table = new JBTable(histogramTableModel);
         table.setAutoCreateRowSorter(true);

@@ -39,11 +39,11 @@ public class ToolContentDataLoaderTest {
         dataLoader.execute();
 
         assertNotNull(dataLoader.getContentData());
-        assertEquals(1, dataLoader.getContentData().size());
-        assertEquals(instances, (long) dataLoader.getContentData().get(0).getFinalInstances());
-        assertEquals(module, dataLoader.getContentData().get(0).getModule());
-        assertEquals(name, dataLoader.getContentData().get(0).getName());
-        assertEquals(size, (long) dataLoader.getContentData().get(0).getFinalSize());
+        assertEquals(1, dataLoader.getContentData().getClassStates().size());
+        assertEquals(instances, (long) dataLoader.getContentData().getClassStates().get(0).getFinalInstances());
+        assertEquals(module, dataLoader.getContentData().getClassStates().get(0).getModule());
+        assertEquals(name, dataLoader.getContentData().getClassStates().get(0).getName());
+        assertEquals(size, (long) dataLoader.getContentData().getClassStates().get(0).getFinalSize());
     }
 
     @Test
@@ -61,15 +61,15 @@ public class ToolContentDataLoaderTest {
         ToolContentDataLoader dataLoader = new ToolContentDataLoader(files);
         dataLoader.execute();
 
-        assertEquals(1, dataLoader.getContentData().size());
+        assertEquals(1, dataLoader.getContentData().getClassStates().size());
 
-        assertEquals(10L, (long) dataLoader.getContentData().get(0).getInitialInstances());
-        assertEquals(40L, (long) dataLoader.getContentData().get(0).getFinalInstances());
-        assertArrayEquals(new Long[]{null, -5L, null, 15L, 20L}, dataLoader.getContentData().get(0).getDifferencesInstances());
+        assertEquals(10L, (long) dataLoader.getContentData().getClassStates().get(0).getInitialInstances());
+        assertEquals(40L, (long) dataLoader.getContentData().getClassStates().get(0).getFinalInstances());
+        assertArrayEquals(new Long[]{null, -5L, null, 15L, 20L}, dataLoader.getContentData().getClassStates().get(0).getDifferencesInstances());
 
-        assertEquals(20L, (long) dataLoader.getContentData().get(0).getInitialSize());
-        assertEquals(80L, (long) dataLoader.getContentData().get(0).getFinalSize());
-        assertArrayEquals(new Long[]{null, -10L, null, 30L, 40L}, dataLoader.getContentData().get(0).getDifferencesSizes());
+        assertEquals(20L, (long) dataLoader.getContentData().getClassStates().get(0).getInitialSize());
+        assertEquals(80L, (long) dataLoader.getContentData().getClassStates().get(0).getFinalSize());
+        assertArrayEquals(new Long[]{null, -10L, null, 30L, 40L}, dataLoader.getContentData().getClassStates().get(0).getDifferencesSizes());
     }
 
     @Test
@@ -84,14 +84,14 @@ public class ToolContentDataLoaderTest {
         ToolContentDataLoader dataLoader = new ToolContentDataLoader(files);
         dataLoader.execute();
 
-        assertEquals(1, dataLoader.getContentData().size());
+        assertEquals(1, dataLoader.getContentData().getClassStates().size());
 
-        assertNull(dataLoader.getContentData().get(0).getInitialInstances());
-        assertEquals(20L, (long) dataLoader.getContentData().get(0).getFinalInstances());
-        assertArrayEquals(new Long[]{10L, 10L}, dataLoader.getContentData().get(0).getDifferencesInstances());
+        assertNull(dataLoader.getContentData().getClassStates().get(0).getInitialInstances());
+        assertEquals(20L, (long) dataLoader.getContentData().getClassStates().get(0).getFinalInstances());
+        assertArrayEquals(new Long[]{10L, 10L}, dataLoader.getContentData().getClassStates().get(0).getDifferencesInstances());
 
-        assertNull(dataLoader.getContentData().get(0).getInitialSize());
-        assertEquals(40L, (long) dataLoader.getContentData().get(0).getFinalSize());
-        assertArrayEquals(new Long[]{20L, 20L}, dataLoader.getContentData().get(0).getDifferencesSizes());
+        assertNull(dataLoader.getContentData().getClassStates().get(0).getInitialSize());
+        assertEquals(40L, (long) dataLoader.getContentData().getClassStates().get(0).getFinalSize());
+        assertArrayEquals(new Long[]{20L, 20L}, dataLoader.getContentData().getClassStates().get(0).getDifferencesSizes());
     }
 }
