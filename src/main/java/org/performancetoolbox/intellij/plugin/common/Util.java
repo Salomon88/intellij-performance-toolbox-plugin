@@ -5,7 +5,9 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.testFramework.LightVirtualFile;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
@@ -13,8 +15,10 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeListener;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -23,6 +27,14 @@ import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingWorker.StateValue.DONE;
 
 public class Util {
+
+    public static GCResource createGCResource(List<VirtualFile> files) {
+        if (files == null || files.size() == 0) {
+            return null;
+        }
+
+        return createGCResource(files.stream().map(VirtualFile::getPath).toArray(String[]::new));
+    }
 
     public static GCResource createGCResource(String... files) {
         if (files == null || files.length == 0) {
@@ -42,8 +54,20 @@ public class Util {
         return createGCResource(stream(files).map(VirtualFile::getPath).toArray(String[]::new));
     }
 
+    public static List<VirtualFile> getUnpackedHistoryRecord(String historyRecord) {
+        return stream(historyRecord.split(";")).map(LightVirtualFile::new).collect(toList());
+    }
+
     public static ResourceBundle getResourceBundle() {
         return ResourceBundle.getBundle("gcviewerBundle");
+    }
+
+    public static String getHistoryRecord(List<VirtualFile> files) {
+        return files.stream()
+                .map(VirtualFile::getPath)
+                .map(FileUtil::toSystemDependentName)
+                .sorted()
+                .collect(Collectors.joining(";"));
     }
 
     public static String getNormalizedName(GCDocument gcDocument) {

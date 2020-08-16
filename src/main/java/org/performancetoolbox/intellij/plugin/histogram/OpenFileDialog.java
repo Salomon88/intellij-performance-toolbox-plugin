@@ -2,25 +2,24 @@ package org.performancetoolbox.intellij.plugin.histogram;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.testFramework.LightVirtualFile;
 import org.jetbrains.annotations.Nullable;
 import org.performancetoolbox.intellij.plugin.common.DialogWrapperWIthResultAndHistory;
+import org.performancetoolbox.intellij.plugin.common.OpenFileHistoryAdapter;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.Util.getUnpackedHistoryRecord;
 
 public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<List<VirtualFile>> {
 
     private List<VirtualFile> result;
 
-    public OpenFileDialog(@Nullable Project project) {
+    public OpenFileDialog(@Nullable Project project, OpenFileHistoryAdapter historyAdapter) {
         super(project,
                 getResourceBundle().getString("dialog.open.histogram.title"),
                 getResourceBundle().getString("dialog.open.histogram.text"),
-                "performancetoolbox.open.histograms.urls");
+                historyAdapter);
     }
 
     @Override
@@ -30,6 +29,6 @@ public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<List<Virtu
 
     @Override
     protected void prepareResult() {
-        result = Arrays.stream(textFieldWithHistory.getText().split(";")).map(LightVirtualFile::new).collect(toList());
+        result = getUnpackedHistoryRecord(textFieldWithHistory.getText());
     }
 }

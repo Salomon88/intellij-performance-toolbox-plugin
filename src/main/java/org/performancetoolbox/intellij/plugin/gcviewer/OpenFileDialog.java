@@ -4,19 +4,21 @@ import com.intellij.openapi.project.Project;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import org.jetbrains.annotations.Nullable;
 import org.performancetoolbox.intellij.plugin.common.DialogWrapperWIthResultAndHistory;
+import org.performancetoolbox.intellij.plugin.common.OpenFileHistoryAdapter;
 
 import static org.performancetoolbox.intellij.plugin.common.Util.createGCResource;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.Util.getUnpackedHistoryRecord;
 
 public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<GCResource> {
 
     private GCResource result;
 
-    public OpenFileDialog(@Nullable Project project) {
+    public OpenFileDialog(@Nullable Project project, OpenFileHistoryAdapter historyAdapter) {
         super(project,
                 getResourceBundle().getString("dialog.open.gc.title"),
                 getResourceBundle().getString("dialog.open.gc.text"),
-                "performancetoolbox.open.gc.urls");
+                historyAdapter);
     }
 
     @Override
@@ -26,6 +28,6 @@ public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<GCResource
 
     @Override
     protected void prepareResult() {
-        result = createGCResource(textFieldWithHistory.getText().split(";"));
+        result = createGCResource(getUnpackedHistoryRecord(textFieldWithHistory.getText()));
     }
 }
