@@ -5,7 +5,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.performancetoolbox.intellij.plugin.common.OpenFileHistoryAdapter;
 import org.performancetoolbox.intellij.plugin.common.ViewAdderFactory;
+import org.performancetoolbox.intellij.plugin.common.impl.OpenFileHistoryAdapterPropertiesComponentImpl;
 import org.performancetoolbox.intellij.plugin.histogram.OpenFileDialog;
 import org.performancetoolbox.intellij.plugin.histogram.ToolContentLoader;
 
@@ -15,6 +17,7 @@ import static com.intellij.openapi.actionSystem.CommonDataKeys.VIRTUAL_FILE_ARRA
 import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+import static org.performancetoolbox.intellij.plugin.common.Util.getHistoryRecord;
 
 public class OpenAction extends AnAction {
 
@@ -24,12 +27,16 @@ public class OpenAction extends AnAction {
     }
 
     private List<VirtualFile> getVirtualFiles(AnActionEvent e) {
-        if (GROUP_MAIN_MENU.equals(e.getPlace())) {
-            OpenFileDialog dialog = new OpenFileDialog(e.getProject());
-            return dialog.showAndGet() ? dialog.getResult() : null;
-        }
+        final OpenFileHistoryAdapter historyAdapter = new OpenFileHistoryAdapterPropertiesComponentImpl("performancetoolbox.open.histograms.urls", 15);
 
-        return asList(e.getData(VIRTUAL_FILE_ARRAY));
+        if (GROUP_MAIN_MENU.equals(e.getPlace())) {
+            OpenFileDialog dialog = new OpenFileDialog(e.getProject(), historyAdapter);
+            return dialog.showAndGet() ? dialog.getResult() : null;
+        } else {
+            final List<VirtualFile> files = asList(e.getData(VIRTUAL_FILE_ARRAY));
+            historyAdapter.addAndStore(getHistoryRecord(files));
+            return files;
+        }
     }
 
     private void load(Project project, List<VirtualFile> files) {
