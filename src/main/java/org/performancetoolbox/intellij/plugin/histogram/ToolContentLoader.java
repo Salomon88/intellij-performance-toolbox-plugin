@@ -16,7 +16,7 @@ import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedNa
 
 public class ToolContentLoader implements ToolContentLoadable<List<VirtualFile>> {
 
-    private Project project;
+    private final Project project;
 
     public ToolContentLoader(Project project) {
         this.project = project;
@@ -25,7 +25,7 @@ public class ToolContentLoader implements ToolContentLoadable<List<VirtualFile>>
     @Override
     public void load(List<VirtualFile> files, BiConsumer<Project, ToolContentHoldable> callback) {
         ToolContentDataLoaderGroupTracker toolContentDataLoaderGroupTracker = new ToolContentDataLoaderGroupTrackerImpl(getNormalizedName(files.get(0).getName()));
-        ToolContentDataLoadable<List<State>> toolContentDataLoadable = new ToolContentDataLoader(files);
+        ToolContentDataLoadable<State> toolContentDataLoadable = new ToolContentDataLoader(files);
         toolContentDataLoaderGroupTracker.addModelLoader(toolContentDataLoadable);
         doInBackground(project, toolContentDataLoaderGroupTracker, () -> callback.accept(project, new ToolContentHolder(toolContentDataLoadable.getContentData(), getNormalizedName(files.get(0).getName()))));
     }

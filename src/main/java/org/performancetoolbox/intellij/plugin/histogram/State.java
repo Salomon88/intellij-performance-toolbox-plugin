@@ -1,84 +1,108 @@
 package org.performancetoolbox.intellij.plugin.histogram;
 
+import com.intellij.openapi.vfs.VirtualFile;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class State {
-    private Long initialInstances;
-    private Long initialSize;
-    private Long finalInstances;
-    private Long finalSize;
-    private Long[] differencesInstances;
-    private Long[] differencesSizes;
-    private String module;
-    private String name;
 
-    public Long getInitialInstances() {
-        return initialInstances;
+    private List<ClassState> classStates;
+    private List<VirtualFile> files;
+
+    public State(List<VirtualFile> files, List<ClassState> classStates) {
+        this.classStates = classStates;
+        this.files = files;
     }
 
-    public Long getInitialSize() {
-        return initialSize;
+    public List<ClassState> getClassStates() {
+        return new ArrayList<>(classStates);
     }
 
-    public Long getFinalInstances() {
-        return finalInstances;
+    public List<VirtualFile> getFiles() {
+        return new ArrayList<>(files);
     }
 
-    public Long getFinalSize() {
-        return finalSize;
-    }
+    public static class ClassState {
+        private Long initialInstances;
+        private Long initialSize;
+        private Long finalInstances;
+        private Long finalSize;
+        private Long[] differencesInstances;
+        private Long[] differencesSizes;
+        private String module;
+        private String name;
 
-    public Long[] getDifferencesInstances() {
-        return differencesInstances;
-    }
+        public Long getInitialInstances() {
+            return initialInstances;
+        }
 
-    public Long[] getDifferencesSizes() {
-        return differencesSizes;
-    }
+        public Long getInitialSize() {
+            return initialSize;
+        }
 
-    public String getModule() {
-        return module;
-    }
+        public Long getFinalInstances() {
+            return finalInstances;
+        }
 
-    public String getName() {
-        return name;
-    }
+        public Long getFinalSize() {
+            return finalSize;
+        }
 
-    public State setDifferencesInstances(Long[] differencesInstances) {
-        this.differencesInstances = differencesInstances;
-        return this;
-    }
+        public Long[] getDifferencesInstances() {
+            return differencesInstances;
+        }
 
-    public State setDifferencesSizes(Long[] differencesSizes) {
-        this.differencesSizes = differencesSizes;
-        return this;
-    }
+        public Long[] getDifferencesSizes() {
+            return differencesSizes;
+        }
 
-    public State setInitialInstances(Long initialInstances) {
-        this.initialInstances = initialInstances;
-        return this;
-    }
+        public String getModule() {
+            return module;
+        }
 
-    public State setInitialSize(Long initialSize) {
-        this.initialSize = initialSize;
-        return this;
-    }
+        public String getName() {
+            return name;
+        }
 
-    public State setFinalInstances(Long finalInstances) {
-        this.finalInstances = finalInstances;
-        return this;
-    }
+        public ClassState setDifferencesInstances(Long[] differencesInstances) {
+            this.differencesInstances = differencesInstances;
+            return this;
+        }
 
-    public State setFinalSize(Long finalSize) {
-        this.finalSize = finalSize;
-        return this;
-    }
+        public ClassState setDifferencesSizes(Long[] differencesSizes) {
+            this.differencesSizes = differencesSizes;
+            return this;
+        }
 
-    public State setModule(String module) {
-        this.module = module;
-        return this;
-    }
+        public ClassState setInitialInstances(Long initialInstances) {
+            this.initialInstances = initialInstances;
+            return this;
+        }
 
-    public State setName(String name) {
-        this.name = name;
-        return this;
+        public ClassState setInitialSize(Long initialSize) {
+            this.initialSize = initialSize;
+            return this;
+        }
+
+        public ClassState setFinalInstances(Long finalInstances) {
+            this.finalInstances = finalInstances;
+            return this;
+        }
+
+        public ClassState setFinalSize(Long finalSize) {
+            this.finalSize = finalSize;
+            return this;
+        }
+
+        public ClassState setModule(String module) {
+            this.module = module;
+            return this;
+        }
+
+        public ClassState setName(String name) {
+            this.name = name;
+            return this;
+        }
     }
 }
