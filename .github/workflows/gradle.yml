@@ -31,4 +31,4 @@ jobs:
     - name: Run tests and build plugin
       env:
         SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
-        run: ./gradlew sonarqube test buildPlugin --build-cache
+      run: ./gradlew sonarqube test buildPlugin --build-cache
