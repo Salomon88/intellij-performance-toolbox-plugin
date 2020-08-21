@@ -29,4 +29,8 @@ File(s) to analyze could be open:
 
 Pull requests are welcomed.
 
-The license is [WTFPL](http://www.wtfpl.net/), just do what the f*ck you want to. 
+The license is [WTFPL](http://www.wtfpl.net/), just do what the f*ck you want to.
+
+## Our sonar project
+
+https://sonarcloud.io/organizations/salomon88/projects
