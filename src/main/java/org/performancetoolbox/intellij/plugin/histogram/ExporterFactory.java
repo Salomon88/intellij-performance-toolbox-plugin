@@ -9,6 +9,9 @@ import static java.util.Optional.ofNullable;
 
 public class ExporterFactory {
 
+    private ExporterFactory() {
+    }
+
     public static Exporter getInstance(VirtualFile file) {
         switch (ofNullable(file.getExtension()).orElse("").toLowerCase()) {
             case "csv":

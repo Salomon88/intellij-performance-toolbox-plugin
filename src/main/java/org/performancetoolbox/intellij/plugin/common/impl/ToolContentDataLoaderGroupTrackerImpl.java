@@ -59,10 +59,8 @@ public class ToolContentDataLoaderGroupTrackerImpl<T> implements ToolContentData
             state.partial = 0;
             loader.removePropertyChangeListener(this);
         } else if ("progress".equals(evt.getPropertyName())) {
-            if (state.totalResources > 1) {
-                if ((Integer) evt.getNewValue() < (Integer) evt.getOldValue()) {
-                    state.completedResources++;
-                }
+            if (state.totalResources > 1 && (Integer) evt.getNewValue() < (Integer) evt.getOldValue()) {
+                state.completedResources++;
             }
 
             state.partial = (Integer) evt.getNewValue();
@@ -82,7 +80,8 @@ public class ToolContentDataLoaderGroupTrackerImpl<T> implements ToolContentData
     }
 
     private void fireProgressChanged() {
-        int current = 0, total = 0;
+        int current = 0;
+        int total = 0;
 
         for (Map.Entry<ToolContentDataLoadable<T>, State> entry : progressStates.entrySet()) {
             State state = entry.getValue();

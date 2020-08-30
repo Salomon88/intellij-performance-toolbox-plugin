@@ -103,12 +103,9 @@ public class ToolContentHolder implements ToolContentHoldable {
             }
         });
 
-        final DefaultActionGroup filterActionGroup = new DefaultActionGroup(getResourceBundle().getString("action.histogram.filter.text"), true) {
-            {
-                getTemplatePresentation().setIcon(Show);
-                getTemplatePresentation().setDescription(getResourceBundle().getString("action.histogram.filter.description"));
-            }
-        };
+        final DefaultActionGroup filterActionGroup = new DefaultActionGroup(getResourceBundle().getString("action.histogram.filter.text"), true);
+        filterActionGroup.getTemplatePresentation().setIcon(Show);
+        filterActionGroup.getTemplatePresentation().setDescription(getResourceBundle().getString("action.histogram.filter.description"));
         filterActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.filterTotal.text"), resourceBundle.getString("action.histogram.filterTotal.description"), true) {
             @Override
             public void setSelected(@NotNull AnActionEvent e, boolean state) {
