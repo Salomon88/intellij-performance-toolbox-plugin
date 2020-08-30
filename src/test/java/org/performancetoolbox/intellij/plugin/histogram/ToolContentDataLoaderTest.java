@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ToolContentDataLoaderTest {
+class ToolContentDataLoaderTest {
 
     @TempDir
     public Path tempDir;
 
     @Test
-    public void sanity() throws IOException {
+    void sanity() throws IOException {
         String module = "testModule";
         String name = "testName";
         long instances = 128;
@@ -47,16 +47,16 @@ public class ToolContentDataLoaderTest {
     }
 
     @Test
-    public void differenceCalculator1() throws Exception {
+    void differenceCalculator1() throws Exception {
         List<VirtualFile> files = range(1, 7)
                 .mapToObj(index -> new LightVirtualFile(Paths.get(tempDir.toString(), Integer.toString(index)).toString()))
                 .collect(toList());
-        writeString(Paths.get(files.get(0).getPath()), "1: 10 20 testName");
-        writeString(Paths.get(files.get(1).getPath()), "");
-        writeString(Paths.get(files.get(2).getPath()), "1: 5 10 testName");
-        writeString(Paths.get(files.get(3).getPath()), "");
-        writeString(Paths.get(files.get(4).getPath()), "1: 20 40 testName");
-        writeString(Paths.get(files.get(5).getPath()), "1: 40 80 testName");
+        writeString(new File(files.get(0).getPath()).toPath(), "1: 10 20 testName");
+        writeString(new File(files.get(1).getPath()).toPath(), "");
+        writeString(new File(files.get(2).getPath()).toPath(), "1: 5 10 testName");
+        writeString(new File(files.get(3).getPath()).toPath(), "");
+        writeString(new File(files.get(4).getPath()).toPath(), "1: 20 40 testName");
+        writeString(new File(files.get(5).getPath()).toPath(), "1: 40 80 testName");
 
         ToolContentDataLoader dataLoader = new ToolContentDataLoader(files);
         dataLoader.execute();
@@ -73,13 +73,13 @@ public class ToolContentDataLoaderTest {
     }
 
     @Test
-    public void differenceCalculator2() throws Exception {
+    void differenceCalculator2() throws Exception {
         List<VirtualFile> files = range(1, 4)
                 .mapToObj(index -> new LightVirtualFile(Paths.get(tempDir.toString(), Integer.toString(index)).toString()))
                 .collect(toList());
-        writeString(Paths.get(files.get(0).getPath()), "");
-        writeString(Paths.get(files.get(1).getPath()), "1: 10 20 testName");
-        writeString(Paths.get(files.get(2).getPath()), "1: 20 40 testName");
+        writeString(new File(files.get(0).getPath()).toPath(), "");
+        writeString(new File(files.get(1).getPath()).toPath(), "1: 10 20 testName");
+        writeString(new File(files.get(2).getPath()).toPath(), "1: 20 40 testName");
 
         ToolContentDataLoader dataLoader = new ToolContentDataLoader(files);
         dataLoader.execute();

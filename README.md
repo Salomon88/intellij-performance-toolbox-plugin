@@ -1,3 +1,5 @@
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Salomon88_intellij-performance-toolbox-plugin&metric=coverage)](https://sonarcloud.io/dashboard?id=Salomon88_intellij-performance-toolbox-plugin) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Salomon88_intellij-performance-toolbox-plugin&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=Salomon88_intellij-performance-toolbox-plugin) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Salomon88_intellij-performance-toolbox-plugin&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Salomon88_intellij-performance-toolbox-plugin)
+
 # Performance Toolbox Plugin for JetBrains IntelliJ IDEA
 
 Compatible with IntelliJ IDEA version __2020.1.1 and up__.
@@ -30,7 +32,3 @@ File(s) to analyze could be open:
 Pull requests are welcomed.
 
 The license is [WTFPL](http://www.wtfpl.net/), just do what the f*ck you want to.
-
-## Our sonar project
-
-https://sonarcloud.io/organizations/salomon88/projects

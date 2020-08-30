@@ -13,9 +13,9 @@ import java.util.Map;
 import static javax.swing.SwingWorker.StateValue.DONE;
 import static javax.swing.SwingWorker.StateValue.STARTED;
 
-public class ToolContentDataLoaderGroupTrackerImpl implements ToolContentDataLoaderGroupTracker {
+public class ToolContentDataLoaderGroupTrackerImpl<T> implements ToolContentDataLoaderGroupTracker<T> {
 
-    private final Map<ToolContentDataLoadable, State> progressStates = new HashMap<>();
+    private final Map<ToolContentDataLoadable<T>, State> progressStates = new HashMap<>();
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
     private final String name;
     private int currentProgress = 0;
@@ -30,16 +30,14 @@ public class ToolContentDataLoaderGroupTrackerImpl implements ToolContentDataLoa
     }
 
     @Override
-    public void addModelLoader(ToolContentDataLoadable loader) {
+    public void addModelLoader(ToolContentDataLoadable<T> loader) {
         loader.addPropertyChangeListener(this);
         progressStates.put(loader, new State(loader));
     }
 
     @Override
     public void cancel() {
-        progressStates.forEach((loader, state) -> {
-            loader.cancel();
-        });
+        progressStates.forEach((loader, state) -> loader.cancel());
     }
 
     @Override
@@ -53,7 +51,7 @@ public class ToolContentDataLoaderGroupTrackerImpl implements ToolContentDataLoa
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        ToolContentDataLoadable loader = (ToolContentDataLoadable) evt.getSource();
+        ToolContentDataLoadable<T> loader = (ToolContentDataLoadable<T>) evt.getSource();
         State state = progressStates.get(loader);
 
         if ("state".equals(evt.getPropertyName()) && DONE == evt.getNewValue()) {
@@ -86,7 +84,7 @@ public class ToolContentDataLoaderGroupTrackerImpl implements ToolContentDataLoa
     private void fireProgressChanged() {
         int current = 0, total = 0;
 
-        for (Map.Entry<ToolContentDataLoadable, State> entry : progressStates.entrySet()) {
+        for (Map.Entry<ToolContentDataLoadable<T>, State> entry : progressStates.entrySet()) {
             State state = entry.getValue();
             current += 100 * state.completedResources + state.partial;
             total += 100 * state.totalResources;
@@ -106,12 +104,12 @@ public class ToolContentDataLoaderGroupTrackerImpl implements ToolContentDataLoa
     }
 
     private class State {
-        ToolContentDataLoadable loader;
+        ToolContentDataLoadable<T> loader;
         int completedResources;
         int partial;
         int totalResources;
 
-        State(ToolContentDataLoadable loader) {
+        State(ToolContentDataLoadable<T> loader) {
             this.loader = loader;
             this.totalResources = loader.getContentData() instanceof GcResourceSeries
                     ? ((GcResourceSeries) loader.getContentData()).getResourcesInOrder().size()

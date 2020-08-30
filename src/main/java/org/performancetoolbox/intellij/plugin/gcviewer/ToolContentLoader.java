@@ -31,7 +31,7 @@ public class ToolContentLoader implements ToolContentLoadable<GCResource>, Prope
 
     @Override
     public void load(GCResource gcResource, BiConsumer<Project, ToolContentHoldable> callback) {
-        ToolContentDataLoaderGroupTracker tracker = new ToolContentDataLoaderGroupTrackerImpl(getNormalizedName(gcResource));
+        ToolContentDataLoaderGroupTracker<GCResource> tracker = new ToolContentDataLoaderGroupTrackerImpl<>(getNormalizedName(gcResource));
         GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
 
         PreferenceData preferencesData = ApplicationManager.
@@ -54,7 +54,7 @@ public class ToolContentLoader implements ToolContentLoadable<GCResource>, Prope
     }
 
     public void reload(GCDocument gcDocument) {
-        ToolContentDataLoaderGroupTracker tracker = new ToolContentDataLoaderGroupTrackerImpl(getNormalizedName(gcDocument));
+        ToolContentDataLoaderGroupTracker<GCResource> tracker = new ToolContentDataLoaderGroupTrackerImpl<>(getNormalizedName(gcDocument));
 
         for (GCResource gcResource : gcDocument.getGCResources()) {
             if (gcResource.hasUnderlyingResourceChanged()) {

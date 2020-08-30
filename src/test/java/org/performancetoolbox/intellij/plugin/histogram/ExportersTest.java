@@ -21,13 +21,13 @@ import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBund
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.SIZE;
 
-public class ExportersTest {
+class ExportersTest {
 
     @TempDir
     public Path tempDir;
 
     @Test
-    public void csvInstancesSizeLastColumnSortedAsc() throws IOException {
+    void csvInstancesSizeLastColumnSortedAsc() throws IOException {
         final File file = export("test.csv", INSTANCES, false, false);
         assertArrayEquals(
                 new String[]{
@@ -38,7 +38,7 @@ public class ExportersTest {
     }
 
     @Test
-    public void csvSingleSizeLastColumnSortedAsc() throws IOException {
+    void csvSingleSizeLastColumnSortedAsc() throws IOException {
         final File file = export("test.csv", SIZE, false, false);
         assertArrayEquals(
                 new String[]{
@@ -49,7 +49,7 @@ public class ExportersTest {
     }
 
     @Test
-    public void csvSizeLastColumnSortedAsc() throws IOException {
+    void csvSizeLastColumnSortedAsc() throws IOException {
         final File file = export("test.csv", SIZE, true, false);
         assertArrayEquals(
                 new String[]{
@@ -60,7 +60,7 @@ public class ExportersTest {
     }
 
     @Test
-    public void csvSizeLastColumnSortedDesc() throws IOException {
+    void csvSizeLastColumnSortedDesc() throws IOException {
         final File file = export("test.csv", SIZE, true, true);
         assertArrayEquals(
                 new String[]{
@@ -71,13 +71,13 @@ public class ExportersTest {
     }
 
     @Test
-    public void xlsSizeLastColumnSortedDesc() throws IOException {
+    void xlsSizeLastColumnSortedDesc() throws IOException {
         final File file = export("test.xls", SIZE, true, true);
         assertTrue(file.exists());
     }
 
     @Test
-    public void xlsxSizeLastColumnSortedDesc() throws IOException {
+    void xlsxSizeLastColumnSortedDesc() throws IOException {
         final File file = export("test.xlsx", SIZE, true, true);
         assertTrue(file.exists());
     }

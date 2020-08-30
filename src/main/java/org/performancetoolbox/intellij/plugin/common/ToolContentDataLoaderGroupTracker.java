@@ -2,11 +2,11 @@ package org.performancetoolbox.intellij.plugin.common;
 
 import java.beans.PropertyChangeListener;
 
-public interface ToolContentDataLoaderGroupTracker extends PropertyChangeListener {
+public interface ToolContentDataLoaderGroupTracker<T> extends PropertyChangeListener {
 
     String getName();
 
-    void addModelLoader(ToolContentDataLoadable loader);
+    void addModelLoader(ToolContentDataLoadable<T> loader);
 
     void execute();
 

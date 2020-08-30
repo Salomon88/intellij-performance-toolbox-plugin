@@ -5,6 +5,9 @@ import org.performancetoolbox.intellij.plugin.common.impl.ConsoleViewAdder;
 
 public class ViewAdderFactory {
 
+    private ViewAdderFactory() {
+    }
+
     public static ViewAdder getInstance() {
         return new ConsoleViewAdder();
     }

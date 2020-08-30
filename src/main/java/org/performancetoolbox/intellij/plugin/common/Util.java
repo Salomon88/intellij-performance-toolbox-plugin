@@ -29,7 +29,7 @@ import static javax.swing.SwingWorker.StateValue.DONE;
 public class Util {
 
     public static GCResource createGCResource(List<VirtualFile> files) {
-        if (files == null || files.size() == 0) {
+        if (files == null || files.isEmpty()) {
             return null;
         }
 
@@ -98,7 +98,7 @@ public class Util {
         throw new IllegalStateException("Failed to find listener of class " + clazz);
     }
 
-    public static void doInBackground(Project project, ToolContentDataLoaderGroupTracker tracker, Runnable successAction) {
+    public static void doInBackground(Project project, ToolContentDataLoaderGroupTracker<?> tracker, Runnable successAction) {
         final ResourceBundle resourceBundle = Util.getResourceBundle();
         ApplicationManager.getApplication().invokeLater(() -> ProgressManager.getInstance().run(new Task.Backgroundable(project, format(resourceBundle.getString("parsing.text"), tracker.getName()), true) {
             @Override
