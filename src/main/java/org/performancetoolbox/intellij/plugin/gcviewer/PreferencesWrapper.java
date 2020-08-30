@@ -27,9 +27,11 @@ public class PreferencesWrapper extends GCPreferences {
 
     @Override
     public void load() {
+        // no op as do not want to load from fs
     }
 
     @Override
     public void store() {
+        // no op as does not want to store on fs
     }
 }
