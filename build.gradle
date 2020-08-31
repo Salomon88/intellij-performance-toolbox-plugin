@@ -63,6 +63,7 @@ sonarqube {
         property "sonar.projectKey", "Salomon88_intellij-performance-toolbox-plugin"
         property "sonar.organization", "salomon88"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.exclusions", "**/actions/**,**/com/tagtraum/**,**/plugin/common/D*.java,**/plugin/common/V*.java"
     }
 }
 
