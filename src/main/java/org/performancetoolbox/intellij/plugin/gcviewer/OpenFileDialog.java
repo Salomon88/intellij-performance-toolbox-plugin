@@ -28,6 +28,6 @@ public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<GCResource
 
     @Override
     protected void prepareResult() {
-        result = createGCResource(getUnpackedHistoryRecord(textFieldWithHistory.getText()));
+        result = createGCResource(getUnpackedHistoryRecord(textFieldWithHistory.getText())).orElseThrow();
     }
 }

@@ -12,6 +12,8 @@ import org.performancetoolbox.intellij.plugin.common.impl.OpenFileHistoryAdapter
 import org.performancetoolbox.intellij.plugin.gcviewer.OpenFileDialog;
 import org.performancetoolbox.intellij.plugin.gcviewer.ToolContentLoader;
 
+import java.util.Optional;
+
 import static com.intellij.openapi.actionSystem.CommonDataKeys.VIRTUAL_FILE_ARRAY;
 import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
 import static java.util.Arrays.asList;
@@ -23,15 +25,15 @@ public class OpenAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        ofNullable(getGCResource(e)).ifPresent(gcResource -> load(e.getProject(), gcResource));
+        getGCResource(e).ifPresent(gcResource -> load(e.getProject(), gcResource));
     }
 
-    private GCResource getGCResource(AnActionEvent e) {
+    private Optional<GCResource> getGCResource(AnActionEvent e) {
         final OpenFileHistoryAdapter historyAdapter = new OpenFileHistoryAdapterPropertiesComponentImpl("performancetoolbox.open.gc.urls", 15);
 
         if (GROUP_MAIN_MENU.equals(e.getPlace())) {
             OpenFileDialog dialog = new OpenFileDialog(e.getProject(), historyAdapter);
-            return dialog.showAndGet() ? dialog.getResult() : null;
+            return ofNullable(dialog.showAndGet() ? dialog.getResult() : null);
         } else {
             final VirtualFile[] files = e.getData(VIRTUAL_FILE_ARRAY);
             historyAdapter.addAndStore(getHistoryRecord(asList(files)));

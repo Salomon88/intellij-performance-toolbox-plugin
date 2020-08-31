@@ -37,6 +37,9 @@ public abstract class DialogWrapperWIthResultAndHistory<T> extends DialogWrapper
         updateOKActionEnabled();
     }
 
+    /**
+     * Must be called on OK action only
+     */
     protected abstract void prepareResult();
 
     @Nullable

@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -23,32 +24,34 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Comparator.reverseOrder;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingWorker.StateValue.DONE;
 
 public class Util {
 
-    public static GCResource createGCResource(List<VirtualFile> files) {
+    public static Optional<GCResource> createGCResource(List<VirtualFile> files) {
         if (files == null || files.isEmpty()) {
-            return null;
+            return empty();
         }
 
         return createGCResource(files.stream().map(VirtualFile::getPath).toArray(String[]::new));
     }
 
-    public static GCResource createGCResource(String... files) {
+    public static Optional<GCResource> createGCResource(String... files) {
         if (files == null || files.length == 0) {
-            return null;
+            return empty();
         } else if (files.length == 1) {
-            return new GcResourceFile(files[0]);
+            return of(new GcResourceFile(files[0]));
         }
 
-        return new GcResourceSeries(stream(files).sorted(reverseOrder()).map(GcResourceFile::new).collect(toList()));
+        return of(new GcResourceSeries(stream(files).sorted(reverseOrder()).map(GcResourceFile::new).collect(toList())));
     }
 
-    public static GCResource createGCResource(VirtualFile... files) {
+    public static Optional<GCResource> createGCResource(VirtualFile... files) {
         if (files == null || files.length == 0) {
-            return null;
+            return empty();
         }
 
         return createGCResource(stream(files).map(VirtualFile::getPath).toArray(String[]::new));
