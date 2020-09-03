@@ -18,13 +18,13 @@ import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
 import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
+import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.ResourceBundle;
 
 import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
@@ -73,7 +73,7 @@ public class ToolContentHolder implements ToolContentHoldable {
         table.getRowSorter().toggleSortOrder(histogramTableModel.getColumnCount() - 1);
         table.getRowSorter().toggleSortOrder(histogramTableModel.getColumnCount() - 1);
 
-        final ResourceBundle resourceBundle = getResourceBundle();
+        final GcPluginBundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.histogram.export.text"), resourceBundle.getString("action.histogram.export.description"), Menu_saveall) {
             @Override

@@ -13,7 +13,10 @@ import java.util.Map;
 
 import static org.apache.commons.collections.MapUtils.isNotEmpty;
 
-@State(name = PreferencesComponent.COMPONENT_NAME, storages = @Storage("gcviewerPreferences.xml"))
+@State(
+        name = PreferencesComponent.COMPONENT_NAME,
+        storages = @Storage("gcviewerPreferences.xml")
+)
 public class PreferencesComponent implements PersistentStateComponent<PreferencesComponent> {
 
     public static final String COMPONENT_NAME = "gcviewerPreferences";
@@ -33,9 +36,6 @@ public class PreferencesComponent implements PersistentStateComponent<Preference
         map.putAll(state.map);
     }
 
-    /*
-    Initialize main method
-     */
     public void setGcDocPreference(@NotNull String filePath, @NotNull PropertyChangeListener propertyChangeListener) {
         filePath = formatFilepath(filePath);
         if (!map.containsKey(filePath)) {

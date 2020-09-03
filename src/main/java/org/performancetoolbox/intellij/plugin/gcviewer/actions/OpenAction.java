@@ -7,10 +7,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.tagtraum.perf.gcviewer.model.GCResource;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.OpenFileHistoryAdapter;
-import org.performancetoolbox.intellij.plugin.common.ViewAdderFactory;
 import org.performancetoolbox.intellij.plugin.common.impl.OpenFileHistoryAdapterPropertiesComponentImpl;
 import org.performancetoolbox.intellij.plugin.gcviewer.OpenFileDialog;
-import org.performancetoolbox.intellij.plugin.gcviewer.ToolContentLoader;
 
 import java.util.Optional;
 
@@ -18,8 +16,8 @@ import static com.intellij.openapi.actionSystem.CommonDataKeys.VIRTUAL_FILE_ARRA
 import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
-import static org.performancetoolbox.intellij.plugin.common.Util.createGCResource;
-import static org.performancetoolbox.intellij.plugin.common.Util.getHistoryRecord;
+import static org.performancetoolbox.intellij.plugin.common.Util.*;
+import static org.performancetoolbox.intellij.plugin.common.factories.ToolContentLoadableFactory.CONTENT_FACTORY;
 
 public class OpenAction extends AnAction {
 
@@ -42,6 +40,8 @@ public class OpenAction extends AnAction {
     }
 
     private void load(Project project, GCResource gcResource) {
-        new ToolContentLoader(project).load(gcResource, ViewAdderFactory::addToView);
+        CONTENT_FACTORY
+                .getViewerInstance(project)
+                .load(gcResource, getViewerFuncReference());
     }
 }

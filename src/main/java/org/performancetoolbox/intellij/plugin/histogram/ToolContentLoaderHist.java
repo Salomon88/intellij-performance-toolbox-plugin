@@ -8,17 +8,19 @@ import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
 import org.performancetoolbox.intellij.plugin.common.ToolContentLoadable;
 import org.performancetoolbox.intellij.plugin.common.impl.ToolContentDataLoaderGroupTrackerImpl;
 
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.function.BiConsumer;
 
 import static org.performancetoolbox.intellij.plugin.common.Util.doInBackground;
 import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedName;
 
-public class ToolContentLoader implements ToolContentLoadable<List<VirtualFile>> {
+public class ToolContentLoaderHist implements ToolContentLoadable<List<VirtualFile>> {
 
     private final Project project;
 
-    public ToolContentLoader(Project project) {
+    public ToolContentLoaderHist(Project project) {
         this.project = project;
     }
 

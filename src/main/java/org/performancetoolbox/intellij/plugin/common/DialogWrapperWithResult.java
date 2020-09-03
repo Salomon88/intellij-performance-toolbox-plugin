@@ -6,10 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class DialogWrapperWithResult<T> extends DialogWrapper {
 
-    public DialogWrapperWithResult(@Nullable Project project) {
-        this(project, true);
-    }
-
     public DialogWrapperWithResult(@Nullable Project project, boolean canBeParent) {
         super(project, canBeParent);
     }

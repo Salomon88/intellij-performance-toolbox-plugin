@@ -16,13 +16,14 @@ import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
 import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
+import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ViewAction;
+import org.performancetoolbox.intellij.plugin.settings.GCViewerApplicationSettings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
-import java.util.ResourceBundle;
 
 import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
@@ -92,16 +93,15 @@ public class ToolContentHolder implements ToolContentHoldable {
     }
 
     private JPanel initComponent() {
-        final ResourceBundle resourceBundle = getResourceBundle();
+        final GcPluginBundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
-/*
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.settings.text"), resourceBundle.getString("action.gc.settings.description"), Settings) {
+
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("settings.display.text"), resourceBundle.getString("settings.description.tooltip"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, (String) null);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, GCViewerApplicationSettings.class);
             }
         });
-*/
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.export.text"), resourceBundle.getString("action.gc.export.description"), Menu_saveall) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -118,7 +118,7 @@ public class ToolContentHolder implements ToolContentHoldable {
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.reload.text"), resourceBundle.getString("action.gc.reload.description"), Refresh) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ToolContentLoader modelLoaderController = getPropertyChangeListener(gcDocument, ToolContentLoader.class);
+                ToolContentLoaderViewer modelLoaderController = getPropertyChangeListener(gcDocument, ToolContentLoaderViewer.class);
                 modelLoaderController.reload(gcDocument);
             }
         });

@@ -13,12 +13,14 @@ import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
+import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
 
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -26,10 +28,14 @@ import static java.util.Arrays.stream;
 import static java.util.Comparator.reverseOrder;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingWorker.StateValue.DONE;
 
 public class Util {
+
+    private Util() {
+    }
 
     public static Optional<GCResource> createGCResource(List<VirtualFile> files) {
         if (files == null || files.isEmpty()) {
@@ -40,7 +46,7 @@ public class Util {
     }
 
     public static Optional<GCResource> createGCResource(String... files) {
-        if (files == null || files.length == 0) {
+        if (isNull(files) || files.length == 0) {
             return empty();
         } else if (files.length == 1) {
             return of(new GcResourceFile(files[0]));
@@ -61,8 +67,8 @@ public class Util {
         return stream(historyRecord.split(";")).map(LightVirtualFile::new).collect(toList());
     }
 
-    public static ResourceBundle getResourceBundle() {
-        return ResourceBundle.getBundle("gcviewerBundle");
+    public static GcPluginBundle getResourceBundle() {
+        return GcPluginBundle.INSTANCE;
     }
 
     public static String getHistoryRecord(List<VirtualFile> files) {
@@ -85,7 +91,7 @@ public class Util {
         name = name.replaceAll("\\\\", "/");
 
         if (name.contains("/")) {
-            return name.substring(name.lastIndexOf("/") + 1);
+            return name.substring(name.lastIndexOf('/') + 1);
         }
 
         return name;
@@ -102,7 +108,7 @@ public class Util {
     }
 
     public static void doInBackground(Project project, ToolContentDataLoaderGroupTracker<?> tracker, Runnable successAction) {
-        final ResourceBundle resourceBundle = Util.getResourceBundle();
+        final GcPluginBundle resourceBundle = GcPluginBundle.INSTANCE;
         ApplicationManager.getApplication().invokeLater(() -> ProgressManager.getInstance().run(new Task.Backgroundable(project, format(resourceBundle.getString("parsing.text"), tracker.getName()), true) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
@@ -131,5 +137,9 @@ public class Util {
                 }
             }
         }));
+    }
+
+    public static BiConsumer<Project, ToolContentHoldable> getViewerFuncReference() {
+        return ViewAdderFactory::addToView;
     }
 }
