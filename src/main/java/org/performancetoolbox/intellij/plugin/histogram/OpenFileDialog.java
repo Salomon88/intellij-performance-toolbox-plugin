@@ -8,8 +8,8 @@ import org.performancetoolbox.intellij.plugin.common.OpenFileHistoryAdapter;
 
 import java.util.List;
 
-import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 import static org.performancetoolbox.intellij.plugin.common.Util.getUnpackedHistoryRecord;
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 
 public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<List<VirtualFile>> {
 
@@ -17,8 +17,8 @@ public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<List<Virtu
 
     public OpenFileDialog(@Nullable Project project, OpenFileHistoryAdapter historyAdapter) {
         super(project,
-                getResourceBundle().getString("dialog.open.histogram.title"),
-                getResourceBundle().getString("dialog.open.histogram.text"),
+                getString("dialog.open.histogram.title"),
+                getString("dialog.open.histogram.text"),
                 historyAdapter);
     }
 

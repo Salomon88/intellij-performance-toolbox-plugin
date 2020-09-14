@@ -18,6 +18,7 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.SIZE;
 
@@ -31,7 +32,7 @@ class ExportersTest {
         final File file = export("test.csv", INSTANCES, false, false);
         assertArrayEquals(
                 new String[]{
-                        getResourceBundle().getString("table.histogram.className.header") + "," + getResourceBundle().getString("table.histogram.moduleName.header") + "," + getResourceBundle().getString("table.histogram.initial.header") + "," + getResourceBundle().getString("table.histogram.final.header"),
+                        getString("table.histogram.className.header") + "," + getString("table.histogram.moduleName.header") + "," + getString("table.histogram.initial.header") + "," + getResourceBundle().getString("table.histogram.final.header"),
                         "Total,,1,1",
                         "[I,,2,2"},
                 readAllLines(file.toPath()).toArray(new String[0]));

@@ -13,11 +13,13 @@ import com.tagtraum.perf.gcviewer.model.GcResourceFile;
 import com.tagtraum.perf.gcviewer.model.GcResourceSeries;
 import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
-import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
+import org.performancetoolbox.intellij.plugin.common.bundles.Bundle;
+import org.reflections.Reflections;
 
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingWorker.StateValue.DONE;
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 
 public class Util {
 
@@ -65,8 +68,13 @@ public class Util {
         return stream(historyRecord.split(";")).map(LightVirtualFile::new).collect(toList());
     }
 
-    public static GcPluginBundle getResourceBundle() {
-        return GcPluginBundle.INSTANCE;
+    public static Bundle getResourceBundle() {
+        return Bundle.INSTANCE;
+    }
+
+    public static <T> Set<Class<? extends T>> getSubTypesOf(Class<T> type) {
+        Reflections reflections = new Reflections("org.performancetoolbox.intellij.plugin");
+        return reflections.getSubTypesOf(type);
     }
 
     public static String getHistoryRecord(List<VirtualFile> files) {
@@ -106,8 +114,7 @@ public class Util {
     }
 
     public static void doInBackground(Project project, ToolContentDataLoaderGroupTracker<?> tracker, Runnable successAction) {
-        final GcPluginBundle resourceBundle = GcPluginBundle.INSTANCE;
-        ApplicationManager.getApplication().invokeLater(() -> ProgressManager.getInstance().run(new Task.Backgroundable(project, format(resourceBundle.getString("parsing.text"), tracker.getName()), true) {
+        ApplicationManager.getApplication().invokeLater(() -> ProgressManager.getInstance().run(new Task.Backgroundable(project, format(getString("parsing.text"), tracker.getName()), true) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 final CountDownLatch latch = new CountDownLatch(1);

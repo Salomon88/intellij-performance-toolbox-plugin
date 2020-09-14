@@ -7,13 +7,15 @@ import org.jetbrains.annotations.PropertyKey;
 
 import java.util.function.Supplier;
 
-public class GcPluginBundle extends DynamicBundle {
+public class Bundle extends DynamicBundle {
 
     @NonNls
     public static final String BUNDLE_PATH = "gcviewerBundle";
-    public static final GcPluginBundle INSTANCE = new GcPluginBundle();
+    public static final Bundle INSTANCE = new Bundle();
 
-    private GcPluginBundle() { super(BUNDLE_PATH); }
+    private Bundle() {
+        super(BUNDLE_PATH);
+    }
 
     @NotNull
     public static String message(@NotNull @PropertyKey(resourceBundle = BUNDLE_PATH) String key, Object @NotNull ... params) {

@@ -2,19 +2,20 @@ package org.performancetoolbox.intellij.plugin.common.settings;
 
 import com.intellij.openapi.options.Configurable;
 import org.jetbrains.annotations.Nls;
-import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
 
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class MemoryToolBoxLimitHistorySettings extends JPanel implements Configurable {
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
+
+public abstract class HistorySettings extends JPanel implements Configurable {
 
     private final String componentText;
-    protected final int min = Integer.valueOf(GcPluginBundle.getString("settings.min.history.size"));
-    protected final int max = Integer.valueOf(GcPluginBundle.getString("settings.max.history.size"));
-    protected final int step = Integer.valueOf(GcPluginBundle.getString("settings.history.step.size"));
+    protected final int min = Integer.valueOf(getString("settings.min.history.size"));
+    protected final int max = Integer.valueOf(getString("settings.max.history.size"));
+    protected final int step = Integer.valueOf(getString("settings.history.step.size"));
 
-    public MemoryToolBoxLimitHistorySettings(String componentText) {
+    public HistorySettings(String componentText) {
         this.componentText = componentText;
         createMainComponent();
     }

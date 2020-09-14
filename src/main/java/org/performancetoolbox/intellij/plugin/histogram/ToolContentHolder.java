@@ -18,7 +18,7 @@ import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
 import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
-import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
+import org.performancetoolbox.intellij.plugin.common.bundles.Bundle;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
@@ -33,6 +33,7 @@ import static com.intellij.icons.AllIcons.Actions.Show;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 import static org.performancetoolbox.intellij.plugin.histogram.ExporterFactory.supportedExtensions;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.SIZE;
@@ -73,12 +74,12 @@ public class ToolContentHolder implements ToolContentHoldable {
         table.getRowSorter().toggleSortOrder(histogramTableModel.getColumnCount() - 1);
         table.getRowSorter().toggleSortOrder(histogramTableModel.getColumnCount() - 1);
 
-        final GcPluginBundle resourceBundle = getResourceBundle();
+        final Bundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.histogram.export.text"), resourceBundle.getString("action.histogram.export.description"), Menu_saveall) {
+        defaultActionGroup.add(new AnAction(getString("action.histogram.export.text"), getString("action.histogram.export.description"), Menu_saveall) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                final FileSaverDescriptor descriptor = new FileSaverDescriptor(resourceBundle.getString("action.histogram.export.text"), resourceBundle.getString("action.histogram.export.description"), supportedExtensions());
+                final FileSaverDescriptor descriptor = new FileSaverDescriptor(getString("action.histogram.export.text"), getString("action.histogram.export.description"), supportedExtensions());
                 final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, (Project) null);
                 // Append extension manually to file name on MacOS because FileSaverDialog does not do it automatically.
                 final String fileName = getDisplayName() + (SystemInfo.isMac ? "." + supportedExtensions()[0] : "");
@@ -91,7 +92,7 @@ public class ToolContentHolder implements ToolContentHoldable {
                 }
             }
         });
-        defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.showType.text"), resourceBundle.getString("action.histogram.showType.description"), PreviewDetails, false) {
+        defaultActionGroup.add(new ToggleBooleanAction(getString("action.histogram.showType.text"), getString("action.histogram.showType.description"), PreviewDetails, false) {
             @Override
             public void setSelected(@NotNull AnActionEvent e, boolean state) {
                 super.setSelected(e, state);
@@ -107,14 +108,14 @@ public class ToolContentHolder implements ToolContentHoldable {
         final DefaultActionGroup filterActionGroup = new DefaultActionGroup(getResourceBundle().getString("action.histogram.filter.text"), true);
         filterActionGroup.getTemplatePresentation().setIcon(Show);
         filterActionGroup.getTemplatePresentation().setDescription(getResourceBundle().getString("action.histogram.filter.description"));
-        filterActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.filterTotal.text"), resourceBundle.getString("action.histogram.filterTotal.description"), true) {
+        filterActionGroup.add(new ToggleBooleanAction(getString("action.histogram.filterTotal.text"), getString("action.histogram.filterTotal.description"), true) {
             @Override
             public void setSelected(@NotNull AnActionEvent e, boolean state) {
                 super.setSelected(e, state);
                 histogramTableModel.setShowTotal(state);
             }
         });
-        filterActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.histogram.filterUnchanged.text"), resourceBundle.getString("action.histogram.filterUnchanged.description"), true) {
+        filterActionGroup.add(new ToggleBooleanAction(getString("action.histogram.filterUnchanged.text"), getString("action.histogram.filterUnchanged.description"), true) {
             @Override
             public void setSelected(@NotNull AnActionEvent e, boolean state) {
                 super.setSelected(e, state);

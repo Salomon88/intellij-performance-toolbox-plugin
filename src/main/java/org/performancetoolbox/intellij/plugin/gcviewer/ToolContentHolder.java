@@ -16,10 +16,10 @@ import com.tagtraum.perf.gcviewer.view.ModelChart;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.ToolContentHoldable;
 import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction;
-import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
+import org.performancetoolbox.intellij.plugin.common.bundles.Bundle;
+import org.performancetoolbox.intellij.plugin.common.settings.ApplicationSettings;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ViewAction;
-import org.performancetoolbox.intellij.plugin.common.settings.GCViewerApplicationSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,6 +48,7 @@ import static java.awt.BorderLayout.WEST;
 import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedName;
 import static org.performancetoolbox.intellij.plugin.common.Util.getPropertyChangeListener;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 
 public class ToolContentHolder implements ToolContentHoldable {
 
@@ -93,29 +94,29 @@ public class ToolContentHolder implements ToolContentHoldable {
     }
 
     private JPanel initComponent() {
-        final GcPluginBundle resourceBundle = getResourceBundle();
+        final Bundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
 
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("settings.description.tooltip"), resourceBundle.getString("settings.description.tooltip"), Settings) {
+        defaultActionGroup.add(new AnAction(getString("settings.description.tooltip"), getString("settings.description.tooltip"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, GCViewerApplicationSettings.class);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationSettings.class);
             }
         });
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.export.text"), resourceBundle.getString("action.gc.export.description"), Menu_saveall) {
+        defaultActionGroup.add(new AnAction(getString("action.gc.export.text"), getString("action.gc.export.description"), Menu_saveall) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 new Export(new MockedGCViewerGui(gcDocument)).actionPerformed(null);
             }
         });
-        defaultActionGroup.add(new ToggleBooleanAction(resourceBundle.getString("action.gc.dataPanel.text"), resourceBundle.getString("action.gc.dataPanel.description"), PreviewDetails, false) {
+        defaultActionGroup.add(new ToggleBooleanAction(getString("action.gc.dataPanel.text"), getString("action.gc.dataPanel.description"), PreviewDetails, false) {
             @Override
             public void setSelected(@NotNull AnActionEvent e, boolean state) {
                 super.setSelected(e, state);
                 gcDocument.setShowModelMetricsPanel(!state);
             }
         });
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.reload.text"), resourceBundle.getString("action.gc.reload.description"), Refresh) {
+        defaultActionGroup.add(new AnAction(getString("action.gc.reload.text"), getString("action.gc.reload.description"), Refresh) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ToolContentLoader modelLoaderController = getPropertyChangeListener(gcDocument, ToolContentLoader.class);

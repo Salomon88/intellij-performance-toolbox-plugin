@@ -17,13 +17,13 @@ import com.tagtraum.perf.gcviewer.view.util.ImageHelper;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.performancetoolbox.intellij.plugin.common.bundles.Bundle;
 import org.performancetoolbox.intellij.plugin.gcviewer.PreferenceData;
 
 import javax.swing.*;
 
 import static com.intellij.icons.AllIcons.General.Filter;
 import static com.tagtraum.perf.gcviewer.util.LocalisationHelper.getString;
-import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 
 public abstract class ViewAction extends ToggleAction {
 
@@ -63,7 +63,7 @@ public abstract class ViewAction extends ToggleAction {
     public static class ViewActionGroup extends DefaultActionGroup {
 
         public ViewActionGroup(PreferenceData preferenceData) {
-            super(getResourceBundle().getString("action.gc.document.view.filter"), true);
+            super(Bundle.getString("action.gc.document.view.filter"), true);
             getTemplatePresentation().setIcon(Filter);
 
             add(new ViewAction(getString("main_frame_menuitem_full_gc_lines"),

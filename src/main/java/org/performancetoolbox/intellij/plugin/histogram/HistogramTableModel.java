@@ -10,6 +10,7 @@ import java.util.Objects;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.INSTANCES;
 import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableModel.SHOW_TYPE.SIZE;
 
@@ -78,7 +79,7 @@ public class HistogramTableModel extends AbstractTableModel {
 
     public String getColumnToolTip(int columnIndex) {
         if (columnIndex == 2) {
-            return format(getResourceBundle().getString("table.histogram.initial.tooltip"), formatFileName(state.getFiles().get(0)));
+            return format(getString("table.histogram.initial.tooltip"), formatFileName(state.getFiles().get(0)));
         } else if (columnIndex < 2) {
             return null;
         } else if (noDifferences() || columnIndex == (filteredClassStates.get(0).getDifferencesSizes().length + 3)) {
@@ -134,7 +135,7 @@ public class HistogramTableModel extends AbstractTableModel {
 
     private void filterClassStates() {
         filteredClassStates = state.getClassStates().stream()
-                .filter(state -> showTotal || !getResourceBundle().getString("table.histogram.total.name").equals(state.getName()))
+                .filter(state -> showTotal || !getString("table.histogram.total.name").equals(state.getName()))
                 .filter(state -> showUnchanged || (showType == INSTANCES
                         ? !Objects.equals(state.getInitialInstances(), state.getFinalInstances())
                         : !Objects.equals(state.getInitialSize(), state.getFinalSize())))

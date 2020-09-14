@@ -9,6 +9,7 @@ import org.performancetoolbox.intellij.plugin.common.OpenFileHistoryAdapter;
 import static org.performancetoolbox.intellij.plugin.common.Util.createGCResource;
 import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
 import static org.performancetoolbox.intellij.plugin.common.Util.getUnpackedHistoryRecord;
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 
 public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<GCResource> {
 
@@ -16,8 +17,8 @@ public class OpenFileDialog extends DialogWrapperWIthResultAndHistory<GCResource
 
     public OpenFileDialog(@Nullable Project project, OpenFileHistoryAdapter historyAdapter) {
         super(project,
-                getResourceBundle().getString("dialog.open.gc.title"),
-                getResourceBundle().getString("dialog.open.gc.text"),
+                getString("dialog.open.gc.title"),
+                getString("dialog.open.gc.text"),
                 historyAdapter);
     }
 

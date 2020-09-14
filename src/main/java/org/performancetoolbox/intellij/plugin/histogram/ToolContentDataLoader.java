@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import static java.util.Optional.ofNullable;
 import static javax.swing.SwingWorker.StateValue.DONE;
 import static javax.swing.SwingWorker.StateValue.STARTED;
-import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 
 public class ToolContentDataLoader implements ToolContentDataLoadable<State> {
 
@@ -144,7 +144,7 @@ public class ToolContentDataLoader implements ToolContentDataLoadable<State> {
         Matcher matcher = TOTAL_RECORD.matcher(line);
 
         if (matcher.matches()) {
-            String name = getResourceBundle().getString("table.histogram.total.name");
+            String name = getString("table.histogram.total.name");
             String key = getKey(name, null);
             long instances = Long.parseLong(matcher.group(1));
             long size = Long.parseLong(matcher.group(2));
