@@ -6,8 +6,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.performancetoolbox.intellij.plugin.common.OpenFileHistoryAdapter;
+import org.performancetoolbox.intellij.plugin.common.ViewAdderFactory;
 import org.performancetoolbox.intellij.plugin.common.impl.OpenFileHistoryAdapterPropertiesComponentImpl;
 import org.performancetoolbox.intellij.plugin.histogram.OpenFileDialog;
+import org.performancetoolbox.intellij.plugin.histogram.ToolContentLoader;
 
 import java.util.List;
 
@@ -16,8 +18,6 @@ import static com.intellij.openapi.actionSystem.IdeActions.GROUP_MAIN_MENU;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.performancetoolbox.intellij.plugin.common.Util.getHistoryRecord;
-import static org.performancetoolbox.intellij.plugin.common.Util.getViewerFuncReference;
-import static org.performancetoolbox.intellij.plugin.common.factories.ToolContentLoadableFactory.CONTENT_FACTORY;
 
 public class OpenAction extends AnAction {
 
@@ -40,8 +40,6 @@ public class OpenAction extends AnAction {
     }
 
     private void load(Project project, List<VirtualFile> files) {
-        CONTENT_FACTORY
-                .getHistInstance(project)
-                .load(files, getViewerFuncReference());
+        new ToolContentLoader(project).load(files, ViewAdderFactory::addToView);
     }
 }

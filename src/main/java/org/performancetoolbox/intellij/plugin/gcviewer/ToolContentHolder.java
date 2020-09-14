@@ -19,7 +19,7 @@ import org.performancetoolbox.intellij.plugin.common.actions.ToggleBooleanAction
 import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ToggleZoomAction;
 import org.performancetoolbox.intellij.plugin.gcviewer.actions.ViewAction;
-import org.performancetoolbox.intellij.plugin.settings.GCViewerApplicationSettings;
+import org.performancetoolbox.intellij.plugin.common.settings.GCViewerApplicationSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -96,7 +96,7 @@ public class ToolContentHolder implements ToolContentHoldable {
         final GcPluginBundle resourceBundle = getResourceBundle();
         final DefaultActionGroup defaultActionGroup = new DefaultActionGroup();
 
-        defaultActionGroup.add(new AnAction(resourceBundle.getString("settings.display.text"), resourceBundle.getString("settings.description.tooltip"), Settings) {
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("settings.description.tooltip"), resourceBundle.getString("settings.description.tooltip"), Settings) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 ShowSettingsUtil.getInstance().showSettingsDialog(project, GCViewerApplicationSettings.class);
@@ -118,7 +118,7 @@ public class ToolContentHolder implements ToolContentHoldable {
         defaultActionGroup.add(new AnAction(resourceBundle.getString("action.gc.reload.text"), resourceBundle.getString("action.gc.reload.description"), Refresh) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                ToolContentLoaderViewer modelLoaderController = getPropertyChangeListener(gcDocument, ToolContentLoaderViewer.class);
+                ToolContentLoader modelLoaderController = getPropertyChangeListener(gcDocument, ToolContentLoader.class);
                 modelLoaderController.reload(gcDocument);
             }
         });

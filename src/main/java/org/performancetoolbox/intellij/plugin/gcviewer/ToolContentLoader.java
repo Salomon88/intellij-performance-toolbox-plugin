@@ -21,11 +21,11 @@ import java.util.function.BiConsumer;
 import static org.performancetoolbox.intellij.plugin.common.Util.doInBackground;
 import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedName;
 
-public class ToolContentLoaderViewer implements ToolContentLoadable<GCResource>, PropertyChangeListener {
+public class ToolContentLoader implements ToolContentLoadable<GCResource>, PropertyChangeListener {
 
     private Project project;
 
-    public ToolContentLoaderViewer(Project project) {
+    public ToolContentLoader(Project project) {
         this.project = project;
     }
 

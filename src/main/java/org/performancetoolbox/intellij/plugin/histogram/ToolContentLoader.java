@@ -16,11 +16,11 @@ import java.util.function.BiConsumer;
 import static org.performancetoolbox.intellij.plugin.common.Util.doInBackground;
 import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedName;
 
-public class ToolContentLoaderHist implements ToolContentLoadable<List<VirtualFile>> {
+public class ToolContentLoader implements ToolContentLoadable<List<VirtualFile>> {
 
     private final Project project;
 
-    public ToolContentLoaderHist(Project project) {
+    public ToolContentLoader(Project project) {
         this.project = project;
     }
 

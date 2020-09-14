@@ -18,17 +18,15 @@ import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Comparator.reverseOrder;
+import static java.util.Objects.isNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.SwingWorker.StateValue.DONE;
 
@@ -137,9 +135,5 @@ public class Util {
                 }
             }
         }));
-    }
-
-    public static BiConsumer<Project, ToolContentHoldable> getViewerFuncReference() {
-        return ViewAdderFactory::addToView;
     }
 }

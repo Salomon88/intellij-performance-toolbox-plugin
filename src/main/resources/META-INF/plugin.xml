@@ -16,7 +16,7 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable  instance="org.performancetoolbox.intellij.plugin.settings.GCViewerApplicationSettings"/>
+        <applicationConfigurable  instance="org.performancetoolbox.intellij.plugin.common.settings.GCViewerApplicationSettings"/>
     </extensions>
 
     <actions>

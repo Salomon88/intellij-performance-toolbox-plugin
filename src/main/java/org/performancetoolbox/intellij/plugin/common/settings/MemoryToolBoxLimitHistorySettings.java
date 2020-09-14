@@ -1,29 +1,30 @@
-package org.performancetoolbox.intellij.plugin.settings;
+package org.performancetoolbox.intellij.plugin.common.settings;
 
 import com.intellij.openapi.options.Configurable;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.Nullable;
 import org.performancetoolbox.intellij.plugin.common.bundles.GcPluginBundle;
 
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class GcPluginLimitHistory extends JPanel implements Configurable {
+public abstract class MemoryToolBoxLimitHistorySettings extends JPanel implements Configurable {
 
-    private final String componentName;
+    private final String componentText;
     protected final int min = Integer.valueOf(GcPluginBundle.getString("settings.min.history.size"));
     protected final int max = Integer.valueOf(GcPluginBundle.getString("settings.max.history.size"));
     protected final int step = Integer.valueOf(GcPluginBundle.getString("settings.history.step.size"));
 
-    public GcPluginLimitHistory(String componentName) {
-        this.componentName = componentName;
+    public MemoryToolBoxLimitHistorySettings(String componentText) {
+        this.componentText = componentText;
+        createMainComponent();
     }
 
     @Override
-    public @Nullable JComponent createComponent() {
-        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    public JComponent createComponent() {
+        JPanel mainPanel = new JPanel();
+        mainPanel.setBorder(BorderFactory.createTitledBorder(getComponentName()));
 
-        JLabel label = new JLabel(componentName);
+        JLabel label = new JLabel(componentText);
         JSpinner commonSpinner = new JSpinner(createSpinnerModel());
 
         mainPanel.add(label);
@@ -49,5 +50,16 @@ public abstract class GcPluginLimitHistory extends JPanel implements Configurabl
     public void disposeUIResources() {
     }
 
+    private void createMainComponent() {
+        JLabel label = new JLabel(componentText);
+        setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+        JSpinner commonSpinner = new JSpinner(createSpinnerModel());
+        add(label);
+        add(commonSpinner);
+    }
+
     protected abstract SpinnerNumberModel createSpinnerModel();
+
+    protected abstract String getComponentName();
 }

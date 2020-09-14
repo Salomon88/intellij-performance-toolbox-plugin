@@ -4,6 +4,7 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.annotations.MapAnnotation;
+import com.intellij.util.xmlb.annotations.Tag;
 import org.apache.commons.collections.map.LRUMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,7 @@ import static org.apache.commons.collections.MapUtils.isNotEmpty;
 public class PreferencesComponent implements PersistentStateComponent<PreferencesComponent> {
 
     public static final String COMPONENT_NAME = "gcviewerPreferences";
+
     private static final int GCDOC_MAP_CAPACITY = 15;
 
     @MapAnnotation(entryTagName = "filepath", surroundWithTag = false)
