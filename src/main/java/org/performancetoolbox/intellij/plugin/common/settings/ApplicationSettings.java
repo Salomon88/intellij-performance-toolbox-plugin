@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 
 import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 
@@ -18,9 +17,7 @@ public class ApplicationSettings implements Configurable {
 
     @Override
     public @Nullable JComponent createComponent() {
-        JPanel myMainPanel = new JPanel(new BorderLayout());
-        myMainPanel.add(new MainToolBoxPanel().createComponent(), BorderLayout.WEST);
-        return myMainPanel;
+        return new MainToolBoxPanel().createComponent();
     }
 
     @Override
