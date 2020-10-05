@@ -5,18 +5,15 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
+import org.performancetoolbox.intellij.plugin.common.annotations.Parent;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST;
-import static com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH;
-import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW;
-import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK;
-import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
-import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW;
+import static com.intellij.uiDesigner.core.GridConstraints.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static javax.swing.Box.createVerticalGlue;
@@ -48,7 +45,10 @@ public class MainToolBoxPanel extends JPanel implements Configurable {
     }
 
     private void createMainComponent() {
-        List<Class<? extends HistorySettings>> classes = new ArrayList<>(getSubTypesOf(HistorySettings.class));
+        List<Class<? extends HistorySettings>> classes = new ArrayList<>(getSubTypesOf(HistorySettings.class))
+                .stream()
+                .filter(type -> type.isAnnotationPresent(Parent.class))
+                .collect(Collectors.toList());
 
         if (!classes.isEmpty()) {
             setLayout(new GridLayoutManager(classes.size() + 1, 1));

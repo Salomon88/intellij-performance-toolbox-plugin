@@ -4,41 +4,31 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.jetbrains.annotations.Nls;
+import org.performancetoolbox.intellij.plugin.common.annotations.Parent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 import static com.intellij.ui.IdeBorderFactory.createTitledBorder;
-import static com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST;
-import static com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH;
-import static com.intellij.uiDesigner.core.GridConstraints.FILL_NONE;
-import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW;
-import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK;
-import static com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED;
+import static com.intellij.uiDesigner.core.GridConstraints.*;
 import static javax.swing.Box.createHorizontalGlue;
 import static org.performancetoolbox.intellij.plugin.common.bundles.Bundle.getString;
 
-public abstract class HistorySettings implements Configurable {
+public abstract class HistorySettings extends JPanel implements Configurable {
 
-    private final String componentText;
     protected final int min = Integer.valueOf(getString("settings.min.history.size"));
     protected final int max = Integer.valueOf(getString("settings.max.history.size"));
     protected final int step = Integer.valueOf(getString("settings.history.step.size"));
 
-    public HistorySettings(String componentText) {
-        this.componentText = componentText;
-    }
-
     @Override
     public JComponent createComponent() {
         JPanel mainPanel = new JPanel(new GridLayoutManager(1, 3));
-        mainPanel.setBorder(createTitledBorder(getComponentName()));
+        if (this.getClass().isAnnotationPresent(Parent.class)) {
+            mainPanel.setBorder(createTitledBorder(getComponentName()));
+        }
 
-        JLabel label = new JLabel(componentText);
-        mainPanel.add(label, getGridConstraints(0));
-
-        JSpinner commonSpinner = new JSpinner(createSpinnerModel());
-        mainPanel.add(commonSpinner, getGridConstraints(1));
+        mainPanel.add(createHistoryComponent(), getGridConstraints(1));
         mainPanel.add(createHorizontalGlue(), getGridConstraints(2));
 
         return mainPanel;
@@ -46,11 +36,19 @@ public abstract class HistorySettings implements Configurable {
 
     private GridConstraints getGridConstraints(int column) {
         return new GridConstraints(
-                0, column, 1, 1, ANCHOR_WEST, column == 2 ? FILL_BOTH : FILL_NONE, column == 2 ? SIZEPOLICY_CAN_GROW | SIZEPOLICY_CAN_SHRINK : SIZEPOLICY_FIXED, SIZEPOLICY_FIXED,
+                0,
+                column,
+                1,
+                1,
+                ANCHOR_WEST,
+                column == 2 ? FILL_BOTH : FILL_NONE,
+                column == 2 ? SIZEPOLICY_CAN_GROW | SIZEPOLICY_CAN_SHRINK : SIZEPOLICY_FIXED,
+                SIZEPOLICY_FIXED,
                 new Dimension(-1, -1),
                 new Dimension(-1, -1),
                 new Dimension(-1, -1),
-                0, false
+                0,
+                false
         );
     }
 
@@ -72,7 +70,24 @@ public abstract class HistorySettings implements Configurable {
     public void disposeUIResources() {
     }
 
-    protected abstract SpinnerNumberModel createSpinnerModel();
+    protected Component createHistoryComponent() {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        Parent parent = (Parent) Arrays.stream(
+                this.getClass().getAnnotations())
+                .filter(type -> type.annotationType() == Parent.class)
+                .findFirst()
+                .get();
+
+        for (Class<? extends HistorySettings> clazz : parent.children()) {
+            try {
+                add(clazz.getConstructor().newInstance().createComponent());
+            } catch (Exception e) {
+                /* ignored for now */
+            }
+        }
+
+        return this;
+    }
 
     protected abstract String getComponentName();
 }

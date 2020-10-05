@@ -35,5 +35,8 @@
         <component>
             <implementation-class>org.performancetoolbox.intellij.plugin.gcviewer.PreferencesComponent</implementation-class>
         </component>
+        <component>
+            <implementation-class>org.performancetoolbox.intellij.plugin.histogram.PreferencesComponent</implementation-class>
+        </component>
     </application-components>
 </idea-plugin>
