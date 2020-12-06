@@ -10,6 +10,7 @@ import com.intellij.openapi.fileChooser.FileSaverDescriptor;
 import com.intellij.openapi.fileChooser.FileSaverDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.components.JBScrollPane;
@@ -81,7 +82,7 @@ public class ToolContentHolder implements ToolContentHoldable {
                 final FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, (Project) null);
                 // Append extension manually to file name on MacOS because FileSaverDialog does not do it automatically.
                 final String fileName = getDisplayName() + (SystemInfo.isMac ? "." + supportedExtensions()[0] : "");
-                final VirtualFileWrapper virtualFileWrapper = dialog.save(null, fileName);
+                final VirtualFileWrapper virtualFileWrapper = dialog.save((VirtualFile) null, fileName);
 
                 if (virtualFileWrapper != null) {
                     try {

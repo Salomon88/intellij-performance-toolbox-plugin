@@ -20,11 +20,11 @@ java {
 }
 
 wrapper {
-    gradleVersion = '6.5'
+    gradleVersion = '6.7.1'
 }
 
 group 'org.performancetoolbox'
-version '1.0.0'
+version '1.0.1'
 
 repositories {
     mavenCentral()
@@ -43,7 +43,19 @@ intellij {
 }
 
 patchPluginXml {
-    untilBuild = '202.*'
+    changeNotes """
+        <b>Changes in version 1.0.1:</b>
+        <ul>
+            <li>Support for IntelliJ IDEA 2020.3</li>
+            <li>Improvements: <a href="https://github.com/Salomon88/intellij-performance-toolbox-plugin/issues/31">#31</a></li>
+            <li>Improvements in Histogram Analyzer: <a href="https://github.com/Salomon88/intellij-performance-toolbox-plugin/issues/34">#34</a></li>
+        </ul>
+        <b>Changes in version 1.0.0:</b>
+        <ul>
+            <li>Support for GCViewer 1.36</li>
+            <li>Preview of histogram series analyzer</li>
+        </ul>"""
+    untilBuild = '203.*'
 }
 
 jacoco {
