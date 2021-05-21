@@ -13,24 +13,25 @@ import static java.lang.Double.parseDouble;
 public class ToggleZoomAction extends ToggleAction {
 
     private final ToolContentHolder toolContentHolder;
+    private final double scale;
 
     public ToggleZoomAction(ToolContentHolder toolContentHolder, ZoomPercent zoomPercent) {
         super(zoomPercent.getValue());
+        this.scale = getScale(zoomPercent.getValue());
         this.toolContentHolder = toolContentHolder;
     }
 
     @Override
     public boolean isSelected(@NotNull AnActionEvent e) {
-        return toolContentHolder.getModelChart().getScaleFactor() == getScale(e);
+        return toolContentHolder.getModelChart().getScaleFactor() == scale;
     }
 
     @Override
     public void setSelected(@NotNull AnActionEvent e, boolean state) {
-        toolContentHolder.getModelChart().setScaleFactor(getScale(e));
+        toolContentHolder.getModelChart().setScaleFactor(scale);
     }
 
-    private double getScale(@NotNull AnActionEvent e) {
-        String rawScale = e.getPresentation().getText();
+    private double getScale(String rawScale) {
         return parseDouble(rawScale.substring(0, rawScale.length() - 1));
     }
 
