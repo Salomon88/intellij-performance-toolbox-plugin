@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
@@ -27,7 +26,6 @@ import java.util.ResourceBundle;
 import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.Refresh;
-import static com.intellij.icons.AllIcons.General.Settings;
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.ANTI_ALIAS;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.CONCURRENT_COLLECTION_BEGIN_END;
@@ -42,6 +40,7 @@ import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.TOTAL_MEMORY;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_MEMORY;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_TENURED_MEMORY;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_YOUNG_MEMORY;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.YOUNG_MEMORY;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedName;
@@ -183,6 +182,8 @@ public class ToolContentHolder implements ToolContentHoldable {
                 case USED_YOUNG_MEMORY:
                     gcDocument.getModelChart().setShowUsedYoungMemoryLine((boolean) evt.getNewValue());
                     break;
+                case YOUNG_MEMORY:
+                    gcDocument.getModelChart().setShowYoung((boolean) evt.getNewValue());
                 default:
                     break;
             }
