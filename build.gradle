@@ -1,5 +1,6 @@
 buildscript {
     ext {
+        issuesBaseUrl = 'https://github.com/Salomon88/intellij-performance-toolbox-plugin/issues'
         junitVersion = '5.6.2'
         // as Idea bundles with org.apache.xmlbeans:xmlbeans:2.6.0, but poi-ooxml 4.1.2 requires 3.1.0, so downgrading
         poiVersion = '3.17'
@@ -24,7 +25,7 @@ wrapper {
 }
 
 group 'org.performancetoolbox'
-version '1.0.2'
+version '1.0.3'
 
 repositories {
     mavenCentral()
@@ -44,6 +45,10 @@ intellij {
 
 patchPluginXml {
     changeNotes """
+        <b>Changes in version 1.0.3:</b>
+        <ul>
+            <li>Fixes <a href="${issuesBaseUrl}/39">#39</a> and <a href="${issuesBaseUrl}/40">#40</a></li>
+        </ul>
         <b>Changes in version 1.0.2:</b>
         <ul>
             <li>Support for IntelliJ IDEA 2021.1</li>
@@ -51,8 +56,8 @@ patchPluginXml {
         <b>Changes in version 1.0.1:</b>
         <ul>
             <li>Support for IntelliJ IDEA 2020.3</li>
-            <li>Improvements: <a href="https://github.com/Salomon88/intellij-performance-toolbox-plugin/issues/31">#31</a></li>
-            <li>Improvements in Histogram Analyzer: <a href="https://github.com/Salomon88/intellij-performance-toolbox-plugin/issues/34">#34</a></li>
+            <li>Improvements: <a href="${issuesBaseUrl}/31">#31</a></li>
+            <li>Improvements in Histogram Analyzer: <a href="${issuesBaseUrl}/34">#34</a></li>
         </ul>
         <b>Changes in version 1.0.0:</b>
         <ul>
