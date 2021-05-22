@@ -18,6 +18,7 @@ import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.TOTAL_MEMORY;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_MEMORY;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_TENURED_MEMORY;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.USED_YOUNG_MEMORY;
+import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.YOUNG_MEMORY;
 import static java.util.Objects.nonNull;
 
 @Tag("preferencedata")
@@ -46,6 +47,8 @@ public final class PreferenceData {
     private boolean showDatestamp = true;
     @Tag("tenuredMemory")
     private boolean tenuredMemory = true;
+    @Tag("youngMemory")
+    private boolean youngMemory = true;
     @Tag("totalMemory")
     private boolean totalMemory = true;
     @Tag("usedMemory")
@@ -163,6 +166,18 @@ public final class PreferenceData {
         }
 
         this.tenuredMemory = tenuredMemory;
+    }
+
+    public boolean isYoungMemory() {
+        return youngMemory;
+    }
+
+    public void setYoungMemory(boolean youngMemory) {
+        if (this.youngMemory != youngMemory) {
+            propertyChangeSupport.firePropertyChange(YOUNG_MEMORY, this.youngMemory, youngMemory);
+        }
+
+        this.youngMemory = youngMemory;
     }
 
     public boolean isTotalMemory() {

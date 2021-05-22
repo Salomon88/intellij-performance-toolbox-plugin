@@ -127,6 +127,16 @@ public abstract class ViewAction extends ToggleAction {
                 }
             });
 
+            add(new ViewAction(getString("main_frame_menuitem_young_memory"),
+                    ImageHelper.createMonoColoredImageIcon(TotalTenuredRenderer.DEFAULT_LINEPAINT, 20, 20),
+                    preferenceData.isYoungMemory()
+            ) {
+                @Override
+                public void notifyGui(boolean is) {
+                    preferenceData.setYoungMemory(is);
+                }
+            });
+
             add(new ViewAction(getString("main_frame_menuitem_used_memory"),
                     ImageHelper.createMonoColoredImageIcon(UsedHeapRenderer.DEFAULT_LINEPAINT, 20, 20),
                     preferenceData.isUsedMemory()
