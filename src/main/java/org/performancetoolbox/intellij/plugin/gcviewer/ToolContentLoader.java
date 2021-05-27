@@ -1,6 +1,5 @@
 package org.performancetoolbox.intellij.plugin.gcviewer;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.tagtraum.perf.gcviewer.ctrl.GCModelLoader;
 import com.tagtraum.perf.gcviewer.ctrl.impl.GCDocumentController;
@@ -18,12 +17,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.function.BiConsumer;
 
+import static com.intellij.openapi.components.ServiceManager.getService;
 import static org.performancetoolbox.intellij.plugin.common.Util.doInBackground;
 import static org.performancetoolbox.intellij.plugin.common.Util.getNormalizedName;
 
 public class ToolContentLoader implements ToolContentLoadable<GCResource>, PropertyChangeListener {
 
-    private Project project;
+    private final Project project;
 
     public ToolContentLoader(Project project) {
         this.project = project;
@@ -34,10 +34,7 @@ public class ToolContentLoader implements ToolContentLoadable<GCResource>, Prope
         ToolContentDataLoaderGroupTracker<GCResource> tracker = new ToolContentDataLoaderGroupTrackerImpl<>(getNormalizedName(gcResource));
         GCModelLoader gcModelLoader = GCModelLoaderFactory.createFor(gcResource);
 
-        PreferenceData preferencesData = ApplicationManager.
-                getApplication().
-                getComponent(PreferencesComponent.class).
-                getPreferenceData(gcResource.getResourceName());
+        PreferenceData preferencesData = getService(PreferencesComponent.class).getPreferenceData(gcResource.getResourceName());
 
         GCDocument gcDocument = new GCDocument(new PreferencesWrapper(preferencesData), gcResource.getResourceName());
         gcDocument.addPropertyChangeListener(this);

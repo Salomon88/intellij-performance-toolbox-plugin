@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.tagtraum.perf.gcviewer.ctrl.action.Export;
@@ -26,7 +25,7 @@ import java.util.ResourceBundle;
 import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.Refresh;
-import static com.intellij.openapi.application.ApplicationManager.getApplication;
+import static com.intellij.openapi.components.ServiceManager.getService;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.ANTI_ALIAS;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.CONCURRENT_COLLECTION_BEGIN_END;
 import static com.tagtraum.perf.gcviewer.view.model.GCPreferences.FULL_GC_LINES;
@@ -50,16 +49,15 @@ import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBund
 public class ToolContentHolder implements ToolContentHoldable {
 
     private final Project project;
-    private GCDocument gcDocument;
-    private JComponent component;
+    private final GCDocument gcDocument;
+    private final JComponent component;
 
     public ToolContentHolder(GCDocument gcDocument, Project project) {
         this.gcDocument = gcDocument;
         this.component = initComponent();
         this.project = project;
 
-        PreferencesComponent prefData = getApplication().
-                getComponent(PreferencesComponent.class);
+        PreferencesComponent prefData = getService(PreferencesComponent.class);
         GCResource gcResource = gcDocument.getGCResources().get(0);
         prefData.setGcDocPreference(gcResource.getResourceName(), initPropertyChangeListener());
     }
@@ -85,9 +83,7 @@ public class ToolContentHolder implements ToolContentHoldable {
      */
     @Override
     public void dispose() {
-        getApplication().
-                getComponent(PreferencesComponent.class).
-                removeGcDocListener(gcDocument.getGCResources().get(0).getResourceName());
+        getService(PreferencesComponent.class).removeGcDocListener(gcDocument.getGCResources().get(0).getResourceName());
     }
 
     private JPanel initComponent() {
@@ -124,10 +120,7 @@ public class ToolContentHolder implements ToolContentHoldable {
 
         defaultActionGroup.add(new ToggleZoomAction.ZoomActionGroup(this));
 
-        PreferenceData preferencesData = ApplicationManager.
-                getApplication().
-                getComponent(PreferencesComponent.class).
-                getPreferenceData(gcDocument.getGCResources().get(0).getResourceName());
+        PreferenceData preferencesData = getService(PreferencesComponent.class).getPreferenceData(gcDocument.getGCResources().get(0).getResourceName());
 
         defaultActionGroup.add(new ViewAction.ViewActionGroup(preferencesData));
 
