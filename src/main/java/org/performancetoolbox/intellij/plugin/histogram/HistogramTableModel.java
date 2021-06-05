@@ -22,7 +22,7 @@ public class HistogramTableModel extends AbstractTableModel {
 
     private List<ClassState> filteredClassStates;
     private SHOW_TYPE showType = SIZE;
-    private final State state;
+    private State state;
     private boolean showTotal = true;
     private boolean showUnchanged = true;
 
@@ -60,6 +60,10 @@ public class HistogramTableModel extends AbstractTableModel {
         }
     }
 
+    public State getState() {
+        return state;
+    }
+
     @Override
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
@@ -77,10 +81,12 @@ public class HistogramTableModel extends AbstractTableModel {
     }
 
     public String getColumnToolTip(int columnIndex) {
-        if (columnIndex == 2) {
+        if (columnIndex == 0) {
+            return getResourceBundle().getString("table.histogram.className.tooltip");
+        } else if (columnIndex == 1) {
+            return getResourceBundle().getString("table.histogram.moduleName.tooltip");
+        } else if (columnIndex == 2) {
             return format(getResourceBundle().getString("table.histogram.initial.tooltip"), formatFileName(state.getFiles().get(0)));
-        } else if (columnIndex < 2) {
-            return null;
         } else if (noDifferences() || columnIndex == (filteredClassStates.get(0).getDifferencesSizes().length + 3)) {
             return format(getResourceBundle().getString("table.histogram.final.tooltip"), formatFileName(state.getFiles().get(state.getFiles().size() - 1)));
         } else {
@@ -120,6 +126,12 @@ public class HistogramTableModel extends AbstractTableModel {
             filterClassStates();
             fireTableDataChanged();
         }
+    }
+
+    public void update(State state) {
+        this.state = state;
+        filterClassStates();
+        fireTableDataChanged();
     }
 
     private String formatFileName(VirtualFile file) {

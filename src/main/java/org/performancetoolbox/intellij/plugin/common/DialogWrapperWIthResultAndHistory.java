@@ -16,6 +16,7 @@ import static com.intellij.openapi.fileChooser.FileChooser.chooseFiles;
 import static com.intellij.ui.GuiUtils.constructFieldWithBrowseButton;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static org.performancetoolbox.intellij.plugin.common.Util.PREFERRED_WIDTH;
 import static org.performancetoolbox.intellij.plugin.common.Util.getHistoryRecord;
 
 public abstract class DialogWrapperWIthResultAndHistory<T> extends DialogWrapperWithResult<T> {
@@ -66,7 +67,7 @@ public abstract class DialogWrapperWIthResultAndHistory<T> extends DialogWrapper
                 updateOKActionEnabled();
             }
         });
-        textFieldWithHistory.setMinimumAndPreferredWidth(600);
+        textFieldWithHistory.setMinimumAndPreferredWidth(PREFERRED_WIDTH);
         return constructFieldWithBrowseButton(textFieldWithHistory, actionEvent -> {
             FileChooserDescriptor fcd = new FileChooserDescriptor(true, false, false, false, false, true);
             chooseFiles(fcd, myProject, null, files -> textFieldWithHistory.setText(getHistoryRecord(files)));
