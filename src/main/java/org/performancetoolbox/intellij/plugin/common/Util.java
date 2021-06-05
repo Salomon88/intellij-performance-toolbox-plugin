@@ -31,6 +31,10 @@ import static javax.swing.SwingWorker.StateValue.DONE;
 
 public class Util {
 
+    public static final int DEFAULT_PREFERENCES_CAPACITY = 15;
+
+    public static final int PREFERRED_WIDTH = 600;
+
     public static Optional<GCResource> createGCResource(List<VirtualFile> files) {
         if (files == null || files.isEmpty()) {
             return empty();
@@ -63,6 +67,12 @@ public class Util {
 
     public static ResourceBundle getResourceBundle() {
         return ResourceBundle.getBundle("gcviewerBundle");
+    }
+
+    public static String formatFilepath(String filePath) {
+        return filePath.replace("/", "").
+                replace("\\", "").
+                replace(":", "");
     }
 
     public static String getHistoryRecord(List<VirtualFile> files) {

@@ -29,6 +29,7 @@ import java.util.ResourceBundle;
 import static com.intellij.icons.AllIcons.Actions.Menu_saveall;
 import static com.intellij.icons.AllIcons.Actions.PreviewDetails;
 import static com.intellij.icons.AllIcons.Actions.ProfileMemory;
+import static com.intellij.icons.AllIcons.Actions.Refresh;
 import static com.intellij.icons.AllIcons.Actions.Show;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
@@ -39,12 +40,12 @@ import static org.performancetoolbox.intellij.plugin.histogram.HistogramTableMod
 
 public class ToolContentHolder implements ToolContentHoldable {
 
-    private final State state;
+    private final HistogramTableModel histogramTableModel;
     private final String displayName;
 
     public ToolContentHolder(State state, String displayName) {
         this.displayName = displayName;
-        this.state = state;
+        this.histogramTableModel = new HistogramTableModel(state);
     }
 
     @Override
@@ -54,7 +55,6 @@ public class ToolContentHolder implements ToolContentHoldable {
 
     @Override
     public JComponent getComponent() {
-        final HistogramTableModel histogramTableModel = new HistogramTableModel(state);
         // create sortable table and sort by the last column in a descending order
         final JBTable table = new JBTable(histogramTableModel) {
             @Override
@@ -100,6 +100,17 @@ public class ToolContentHolder implements ToolContentHoldable {
                     histogramTableModel.setShowType(INSTANCES);
                 } else {
                     histogramTableModel.setShowType(SIZE);
+                }
+            }
+        });
+        defaultActionGroup.add(new AnAction(resourceBundle.getString("action.histogram.reorder.text"), resourceBundle.getString("action.histogram.reorder.description"), Refresh) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                OrderSelectorDialog orderSelectorDialog = new OrderSelectorDialog(e.getProject(), histogramTableModel.getState().getFiles());
+                orderSelectorDialog.show();
+
+                if (orderSelectorDialog.isOK()) {
+                    new ToolContentLoader(e.getProject()).reload(orderSelectorDialog.getResult(), toolContentDataLoadable -> histogramTableModel.update(toolContentDataLoadable.getContentData()));
                 }
             }
         });
