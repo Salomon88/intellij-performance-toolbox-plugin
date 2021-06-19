@@ -15,6 +15,7 @@ import com.tagtraum.perf.gcviewer.view.GCDocument;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -62,7 +63,10 @@ public class Util {
     }
 
     public static List<VirtualFile> getUnpackedHistoryRecord(String historyRecord) {
-        return stream(historyRecord.split(";")).map(LightVirtualFile::new).collect(toList());
+        return stream(historyRecord.split(";"))
+                .map(String::strip)
+                .filter(fileName -> !fileName.isBlank())
+                .map(LightVirtualFile::new).collect(toList());
     }
 
     public static ResourceBundle getResourceBundle() {
@@ -77,7 +81,8 @@ public class Util {
 
     public static String getHistoryRecord(List<VirtualFile> files) {
         return files.stream()
-                .map(VirtualFile::getPath)
+                .map(virtualFile -> new File(virtualFile.getPath()))
+                .map(File::getPath)
                 .map(FileUtil::toSystemDependentName)
                 .sorted()
                 .collect(Collectors.joining(";"));

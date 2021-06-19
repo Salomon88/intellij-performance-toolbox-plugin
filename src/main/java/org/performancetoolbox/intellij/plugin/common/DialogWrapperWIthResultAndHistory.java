@@ -2,22 +2,26 @@ package org.performancetoolbox.intellij.plugin.common;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.DocumentAdapter;
+import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.TextFieldWithHistory;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
 import java.awt.*;
+import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 import static com.intellij.openapi.fileChooser.FileChooser.chooseFiles;
 import static com.intellij.ui.GuiUtils.constructFieldWithBrowseButton;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static java.util.stream.Collectors.toList;
 import static org.performancetoolbox.intellij.plugin.common.Util.PREFERRED_WIDTH;
 import static org.performancetoolbox.intellij.plugin.common.Util.getHistoryRecord;
+import static org.performancetoolbox.intellij.plugin.common.Util.getResourceBundle;
+import static org.performancetoolbox.intellij.plugin.common.Util.getUnpackedHistoryRecord;
 
 public abstract class DialogWrapperWIthResultAndHistory<T> extends DialogWrapperWithResult<T> {
 
@@ -25,6 +29,9 @@ public abstract class DialogWrapperWIthResultAndHistory<T> extends DialogWrapper
     protected Project myProject;
     protected String text;
     protected TextFieldWithHistory textFieldWithHistory;
+
+    private String validationInfoText = null;
+    private ValidationInfo validationInfo = null;
 
     public DialogWrapperWIthResultAndHistory(@Nullable Project project, String title, String text, OpenFileHistoryAdapter historyAdapter) {
         super(project, true);
@@ -35,7 +42,7 @@ public abstract class DialogWrapperWIthResultAndHistory<T> extends DialogWrapper
         loadHistory();
         setResizable(false);
         setTitle(title);
-        updateOKActionEnabled();
+        initValidation();
     }
 
     /**
@@ -61,17 +68,38 @@ public abstract class DialogWrapperWIthResultAndHistory<T> extends DialogWrapper
 
     protected JPanel createChoosePanel() {
         textFieldWithHistory = new TextFieldWithHistory();
-        textFieldWithHistory.addDocumentListener(new DocumentAdapter() {
-            @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
-                updateOKActionEnabled();
-            }
-        });
         textFieldWithHistory.setMinimumAndPreferredWidth(PREFERRED_WIDTH);
         return constructFieldWithBrowseButton(textFieldWithHistory, actionEvent -> {
             FileChooserDescriptor fcd = new FileChooserDescriptor(true, false, false, false, false, true);
             chooseFiles(fcd, myProject, null, files -> textFieldWithHistory.setText(getHistoryRecord(files)));
         });
+    }
+
+    @Override
+    protected @Nullable ValidationInfo doValidate() {
+        if (Objects.equals(validationInfoText, textFieldWithHistory.getText())) {
+            return validationInfo;
+        }
+
+        List<VirtualFile> files = getUnpackedHistoryRecord(textFieldWithHistory.getText());
+        List<File> invalidFiles = files
+                .stream()
+                .map(virtualFile -> new File(virtualFile.getPath()))
+                .filter(file -> !file.exists() || !file.isFile())
+                .collect(toList());
+
+        if (!files.isEmpty() && invalidFiles.isEmpty()) {
+            textFieldWithHistory.setText(getHistoryRecord(files));
+            validationInfo = null;
+        } else if (files.isEmpty()) {
+            validationInfo = new ValidationInfo(getResourceBundle().getString("dialog.open.noFileName"), textFieldWithHistory);
+        } else {
+            validationInfo = new ValidationInfo(getResourceBundle().getString("dialog.open.fileNotFound") + ": " + invalidFiles.get(0).getPath(), textFieldWithHistory);
+        }
+
+        validationInfoText = textFieldWithHistory.getText();
+
+        return validationInfo;
     }
 
     @Override
@@ -94,9 +122,5 @@ public abstract class DialogWrapperWIthResultAndHistory<T> extends DialogWrapper
 
     protected void storeHistory() {
         historyAdapter.addAndStore(textFieldWithHistory.getText());
-    }
-
-    protected void updateOKActionEnabled() {
-        setOKActionEnabled(textFieldWithHistory.getText() != null && !textFieldWithHistory.getText().isEmpty());
     }
 }
