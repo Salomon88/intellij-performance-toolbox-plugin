@@ -25,7 +25,7 @@ wrapper {
 }
 
 group 'org.performancetoolbox'
-version '1.0.4'
+version '1.0.5'
 
 repositories {
     mavenCentral()
@@ -45,6 +45,10 @@ intellij {
 
 patchPluginXml {
     changeNotes """
+        <b>Changes in version 1.0.5:</b>
+        <ul>
+            <li>Support for IntelliJ IDEA 2021.3</li>
+        </ul>
         <b>Changes in version 1.0.4:</b>
         <ul>
             <li>Small improvements <a href="${issuesBaseUrl}/44">#44</a> and <a href="${issuesBaseUrl}/46">#46</a></li>
@@ -68,7 +72,7 @@ patchPluginXml {
             <li>Support for GCViewer 1.36</li>
             <li>Preview of histogram series analyzer</li>
         </ul>"""
-    untilBuild = '212.*'
+    untilBuild = '213.*'
 }
 
 jacoco {
